@@ -42,7 +42,7 @@ const SEED_ARTICLES: NewsArticle[] = [
     title: 'RLCS REGIONAL 1 MAIN EVENT QUALIFIER',
     date: 'October 4, 2026',
     readTime: '4 min read',
-    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
+    image: '/images/news/news_qualifier.jpg',
     summary: 'A clutch Game 7 overtime victory against Team BDS secures our starting 3v3 roster a direct spot in the RLCS Europe swiss stage.',
     content: [
       'Following a grueling seven-game series in the final qualifying round, FAZIX locked in their seed for the RLCS Europe Regional 1 Main Event.',
@@ -59,7 +59,7 @@ const SEED_ARTICLES: NewsArticle[] = [
     title: 'BEHIND THE COMMS: GAME 5 DEFENSIVE HOLD',
     date: 'September 28, 2026',
     readTime: '6 min read',
-    image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80',
+    image: '/images/news/news_defense.jpg',
     summary: 'Coach K4RMA and striker Zenith break down the backboard rotations, boost denial, and comms that held off a 12-shot barrage in overtime.',
     content: [
       'Defense in modern Rocket League is rarely about highlight goal-line saves. It is about closing down shooting lanes before the opponent gets clean contact on the ball.',
@@ -76,7 +76,7 @@ const SEED_ARTICLES: NewsArticle[] = [
     title: 'FAZIX RISING: 2026 ACADEMY LINEUP',
     date: 'September 19, 2026',
     readTime: '3 min read',
-    image: 'https://images.unsplash.com/photo-1511882150382-421056c89033?auto=format&fit=crop&w=800&q=80',
+    image: '/images/news/news_hardware.jpg',
     summary: 'Welcoming Pulse, Cypher, and Nexus to our developmental squad as they prepare for the weekly European open circuits.',
     content: [
       'FAZIX is pleased to announce our 2026 developmental lineup for Fazix Rising, our official academy team.',
@@ -93,7 +93,7 @@ const SEED_ARTICLES: NewsArticle[] = [
     title: 'NRW BOOTCAMP & FACILITY PREP',
     date: 'September 12, 2026',
     readTime: '5 min read',
-    image: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=800&q=80',
+    image: '/images/news/news_bootcamp.jpg',
     summary: 'Two weeks of double practice blocks, tactical reviews with coach K4RMA, and LAN setup rehearsal ahead of the European playoffs.',
     content: [
       'The entire Fazix Rocket League squad has arrived at our team facility in North Rhine-Westphalia for a two-week intensive training camp.',
@@ -280,11 +280,11 @@ export async function createArticle(params: {
       : paragraphs[0] || params.title;
 
   const defaultImages = [
-    'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1511882150382-421056c89033?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=800&q=80'
+    '/images/news/news_qualifier.jpg',
+    '/images/news/news_defense.jpg',
+    '/images/news/news_hardware.jpg',
+    '/images/news/news_bootcamp.jpg',
+    '/images/rlcs_lan_stage.jpg'
   ];
   const pickedImage = defaultImages[db.articles.length % defaultImages.length];
 

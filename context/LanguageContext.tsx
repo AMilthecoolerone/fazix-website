@@ -35,6 +35,11 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   useEffect(() => {
     try {
+      // Clear any legacy cookie on mount to keep site 100% cookie-free
+      if (typeof document !== 'undefined') {
+        document.cookie = 'fazix_lang=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+      }
+
       const stored = localStorage.getItem(STORAGE_KEY) as LanguageCode | null;
       if (stored && (stored === 'EN' || stored === 'DE' || stored === 'FR' || stored === 'ES')) {
         setLanguageState(stored);
@@ -67,8 +72,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       localStorage.setItem(STORAGE_KEY, lang);
       if (typeof document !== 'undefined') {
         document.documentElement.lang = lang.toLowerCase();
-        const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : '';
-        document.cookie = `fazix_lang=${lang}; path=/; max-age=31536000; SameSite=Lax${secure}`;
+        // Clear legacy cookie to ensure 0 persistent cookies for strict DSGVO/TDDDG compliance
+        document.cookie = 'fazix_lang=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
       }
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('fazix-language-change', { detail: lang }));

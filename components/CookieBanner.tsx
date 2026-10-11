@@ -15,21 +15,21 @@ export interface CookiePreferences {
 
 const STORAGE_KEY = 'fazix_cookie_consent_v1';
 
-function parseCookie(name: string): string | null {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie.match(new RegExp('(^|;\\s*)' + name + '=([^;]*)'));
-  return match ? decodeURIComponent(match[2]) : null;
-}
-
-function writeCookie(name: string, value: string, maxAgeSeconds: number = 31536000) {
+function clearLegacyCookies() {
   if (typeof document === 'undefined') return;
-  const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : '';
-  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; SameSite=Lax${secure}`;
-}
-
-function deleteCookie(name: string) {
-  if (typeof document === 'undefined') return;
-  document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+  const legacyNames = [
+    'fazix_cookie_consent',
+    'fazix_cookie_essential',
+    'fazix_cookie_preferences',
+    'fazix_cookie_analytics',
+    'fazix_lang'
+  ];
+  legacyNames.forEach((name) => {
+    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+    if (typeof window !== 'undefined' && window.location.hostname) {
+      document.cookie = `${name}=; path=/; domain=${window.location.hostname}; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+    }
+  });
 }
 
 export function CookieBanner() {
@@ -46,7 +46,10 @@ export function CookieBanner() {
 
   const loadCurrentPreferences = () => {
     try {
-      // 1. Try LocalStorage
+      // Clear legacy cookies to ensure zero persistent cookies on client
+      clearLegacyCookies();
+
+      // Read privacy settings from LocalStorage
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
@@ -59,20 +62,6 @@ export function CookieBanner() {
           return true;
         }
       }
-
-      // 2. Try document.cookie
-      const cookieConsent = parseCookie('fazix_cookie_consent');
-      if (cookieConsent) {
-        const isAll = cookieConsent === 'all';
-        const hasAnalytics = isAll || parseCookie('fazix_cookie_analytics') === '1';
-        const hasPrefs = isAll || parseCookie('fazix_cookie_preferences') === '1';
-        setPreferences({
-          essential: true,
-          preferences: hasPrefs,
-          analytics: hasAnalytics,
-        });
-        return true;
-      }
     } catch {
       return false;
     }
@@ -80,6 +69,7 @@ export function CookieBanner() {
   };
 
   useEffect(() => {
+    clearLegacyCookies();
     const consentFound = loadCurrentPreferences();
     if (!consentFound) {
       const timer = setTimeout(() => setIsOpen(true), 600);
@@ -111,26 +101,11 @@ export function CookieBanner() {
     };
 
     try {
-      // 1. Persist to LocalStorage
+      // 1. Persist to LocalStorage (Zero-Cookie Architecture)
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 
-      // 2. Persist real HTTP/browser cookies
-      const consentType = prefs.analytics && prefs.preferences ? 'all' : prefs.analytics ? 'analytics' : 'essential';
-      writeCookie('fazix_cookie_consent', consentType);
-      writeCookie('fazix_cookie_essential', '1');
-
-      if (prefs.preferences) {
-        writeCookie('fazix_cookie_preferences', '1');
-        writeCookie('fazix_lang', language);
-      } else {
-        deleteCookie('fazix_cookie_preferences');
-      }
-
-      if (prefs.analytics) {
-        writeCookie('fazix_cookie_analytics', '1');
-      } else {
-        deleteCookie('fazix_cookie_analytics');
-      }
+      // 2. Clear any legacy cookies to guarantee 0 cookies
+      clearLegacyCookies();
 
       // 3. Dispatch event for telemetry/scripts
       window.dispatchEvent(new CustomEvent('fazix-consent-updated', { detail: payload }));
