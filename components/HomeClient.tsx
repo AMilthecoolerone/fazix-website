@@ -153,6 +153,30 @@ export const TEAMS_DATA: TeamItem[] = [
     image: '/images/teams/fazix_orbit.png',
     accentColor: '#0077FF',
     glowColor: 'rgba(0, 119, 255, 0.4)'
+  },
+  {
+    id: 'team-community-skyfall',
+    name: 'Fazix Skyfall eSports',
+    tier: 'community',
+    image: '/images/teams/fazix_skyfall.jpg',
+    accentColor: '#00D4FF',
+    glowColor: 'rgba(0, 212, 255, 0.45)'
+  },
+  {
+    id: 'team-community-velour',
+    name: 'Fazix Velour eSports',
+    tier: 'community',
+    image: '/images/teams/fazix_velour.jpg',
+    accentColor: '#FF1E38',
+    glowColor: 'rgba(255, 30, 56, 0.45)'
+  },
+  {
+    id: 'team-community-ogs',
+    name: 'Fazix OGs eSports',
+    tier: 'community',
+    image: '/images/teams/fazix_ogs.jpg',
+    accentColor: '#FFD700',
+    glowColor: 'rgba(255, 215, 0, 0.45)'
   }
 ];
 
