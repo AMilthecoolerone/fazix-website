@@ -14,25 +14,6 @@ export interface HomeClientProps {
   initialTicker?: NewsTicker | null;
 }
 
-interface Player {
-  id: string;
-  nickname: string;
-  realName: string;
-  role: string;
-  division: string;
-  country: string;
-  avatar: string;
-  car: string;
-  peakMmr: string;
-  winRate: string;
-  signatureMechanic: string;
-  gear: {
-    controller: string;
-    camera: string;
-    monitor: string;
-  };
-}
-
 interface Article {
   id: string;
   title: string;
@@ -44,211 +25,6 @@ interface Article {
   badge?: string;
   author?: string;
 }
-
-const ROSTERS_DATA: Record<string, Player[]> = {
-  'RLCS EUROPE (MAIN)': [
-    {
-      id: 'rl-1',
-      nickname: 'ZENITH',
-      realName: 'Julian Vance',
-      role: 'Captain & Striker',
-      division: 'RLCS EUROPE (MAIN)',
-      country: 'Germany',
-      avatar: 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?auto=format&fit=crop&w=600&q=80',
-      car: 'Octane',
-      peakMmr: '2,240 SSL',
-      winRate: '78%',
-      signatureMechanic: 'Ceiling Musty Double Tap',
-      gear: {
-        controller: 'Sony DualSense Wireless (Overclocked 1000Hz)',
-        camera: 'FOV 110 · Dist 270 · Height 100 · Angle -4.0 · Stiff 0.45',
-        monitor: 'Alienware AW2524H 500Hz Fast IPS'
-      }
-    },
-    {
-      id: 'rl-2',
-      nickname: 'AURA',
-      realName: 'Liam Moreau',
-      role: 'First Man & Striker',
-      division: 'RLCS EUROPE (MAIN)',
-      country: 'France',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
-      car: 'Fennec',
-      peakMmr: '2,280 SSL',
-      winRate: '81%',
-      signatureMechanic: 'Air Dribble Flip Reset',
-      gear: {
-        controller: 'Razer Wolverine V2 Pro (Paddle Bound Air Roll)',
-        camera: 'FOV 110 · Dist 260 · Height 90 · Angle -3.0 · Stiff 0.50',
-        monitor: 'Alienware AW2524H 500Hz Fast IPS'
-      }
-    },
-    {
-      id: 'rl-3',
-      nickname: 'VORTEX',
-      realName: 'Nico Weber',
-      role: 'Second Man / Playmaker',
-      division: 'RLCS EUROPE (MAIN)',
-      country: 'Germany',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
-      car: 'Fennec',
-      peakMmr: '2,190 SSL',
-      winRate: '76%',
-      signatureMechanic: 'Backboard Defense & Pinch',
-      gear: {
-        controller: 'DualShock 4 v2 (Claw Grip)',
-        camera: 'FOV 110 · Dist 270 · Height 100 · Angle -5.0 · Stiff 0.40',
-        monitor: 'Alienware AW2524H 500Hz Fast IPS'
-      }
-    },
-    {
-      id: 'rl-4',
-      nickname: 'SHADOW',
-      realName: 'Tariq Mansour',
-      role: 'Substitute & Reserve Striker',
-      division: 'RLCS EUROPE (MAIN)',
-      country: 'United Kingdom',
-      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80',
-      car: 'Octane',
-      peakMmr: '2,160 SSL',
-      winRate: '77%',
-      signatureMechanic: 'Ceiling Pinch & Flip Reset',
-      gear: {
-        controller: 'DualSense Wireless (1000Hz)',
-        camera: 'FOV 110 · Dist 270 · Height 90 · Angle -4.0 · Stiff 0.45',
-        monitor: 'Alienware AW2524H 500Hz Fast IPS'
-      }
-    },
-    {
-      id: 'rl-5',
-      nickname: 'K4RMA',
-      realName: 'Lucas Lindqvist',
-      role: 'Head Coach & Analyst',
-      division: 'RLCS EUROPE (MAIN)',
-      country: 'Sweden',
-      avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80',
-      car: 'Dominus',
-      peakMmr: '2,110 SSL',
-      winRate: '75%',
-      signatureMechanic: 'Replay Reviews & Strategy',
-      gear: {
-        controller: 'Xbox Elite Series 2 Wireless',
-        camera: 'FOV 110 · Dist 280 · Height 110 · Angle -3.0 · Stiff 0.40',
-        monitor: 'Alienware AW2723DF 280Hz 1440p'
-      }
-    },
-    {
-      id: 'rl-6',
-      nickname: 'VALKYRIE',
-      realName: 'Elena Krause',
-      role: 'Tactical Scrim Analyst',
-      division: 'RLCS EUROPE (MAIN)',
-      country: 'Germany',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80',
-      car: 'Fennec',
-      peakMmr: '2,090 SSL',
-      winRate: '74%',
-      signatureMechanic: 'Boost Path Telemetry',
-      gear: {
-        controller: 'DualShock 4 v2',
-        camera: 'FOV 110 · Dist 270 · Height 100 · Angle -4.0 · Stiff 0.45',
-        monitor: 'Alienware AW2723DF 280Hz 1440p'
-      }
-    }
-  ],
-  'FAZIX RISING (ACADEMY)': [
-    {
-      id: 'acad-1',
-      nickname: 'PULSE',
-      realName: 'Emil Dahl',
-      role: 'First Man & Striker',
-      division: 'FAZIX RISING (ACADEMY)',
-      country: 'Denmark',
-      avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&q=80',
-      car: 'Octane',
-      peakMmr: '2,080 SSL',
-      winRate: '74%',
-      signatureMechanic: 'Speed Flip Kickoff & Wave Dash',
-      gear: {
-        controller: 'DualSense Wireless (800 DPI)',
-        camera: 'FOV 110 · Dist 270 · Height 100 · Angle -4.0 · Stiff 0.45',
-        monitor: 'Alienware 240Hz Gaming Display'
-      }
-    },
-    {
-      id: 'acad-2',
-      nickname: 'CYPHER',
-      realName: 'Alexander Lind',
-      role: 'Midfield Disruptor',
-      division: 'FAZIX RISING (ACADEMY)',
-      country: 'Sweden',
-      avatar: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=600&q=80',
-      car: 'Fennec',
-      peakMmr: '2,050 SSL',
-      winRate: '73%',
-      signatureMechanic: 'Infield Passing & Demos',
-      gear: {
-        controller: 'DualShock 4 v2',
-        camera: 'FOV 110 · Dist 270 · Height 90 · Angle -4.0 · Stiff 0.50',
-        monitor: 'Alienware 240Hz Gaming Display'
-      }
-    },
-    {
-      id: 'acad-3',
-      nickname: 'NEXUS',
-      realName: 'Marco Rossi',
-      role: 'Third Man & Anchor',
-      division: 'FAZIX RISING (ACADEMY)',
-      country: 'Italy',
-      avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80',
-      car: 'Dominus',
-      peakMmr: '2,020 SSL',
-      winRate: '71%',
-      signatureMechanic: 'Shadow Defense & 50/50s',
-      gear: {
-        controller: 'DualSense Edge Pro',
-        camera: 'FOV 110 · Dist 280 · Height 110 · Angle -4.0 · Stiff 0.45',
-        monitor: 'Alienware 240Hz Gaming Display'
-      }
-    },
-    {
-      id: 'acad-4',
-      nickname: 'BLITZ',
-      realName: 'Lauri Virtanen',
-      role: 'Academy Reserve / Flex',
-      division: 'FAZIX RISING (ACADEMY)',
-      country: 'Finland',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
-      car: 'Octane',
-      peakMmr: '1,980 SSL',
-      winRate: '70%',
-      signatureMechanic: 'Speed Flip Kickoffs',
-      gear: {
-        controller: 'DualShock 4 v2',
-        camera: 'FOV 110 · Dist 270 · Height 100 · Angle -4.0 · Stiff 0.45',
-        monitor: 'Alienware 240Hz Gaming Display'
-      }
-    },
-    {
-      id: 'acad-5',
-      nickname: 'ECHO',
-      realName: 'Mathis Dupont',
-      role: 'Academy Coach & Mentor',
-      division: 'FAZIX RISING (ACADEMY)',
-      country: 'France',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80',
-      car: 'Dominus',
-      peakMmr: '1,950 SSL',
-      winRate: '69%',
-      signatureMechanic: 'Rotational Positioning',
-      gear: {
-        controller: 'Xbox Series X Controller',
-        camera: 'FOV 110 · Dist 280 · Height 110 · Angle -3.0 · Stiff 0.40',
-        monitor: 'Alienware 240Hz Gaming Display'
-      }
-    }
-  ]
-};
 
 const ARTICLES_DATA: Article[] = [
   {
@@ -326,23 +102,15 @@ interface RosterTier {
   iconType: 'star' | 'user' | 'shield';
   image: string;
   description: string;
-  division?: string;
 }
 
 export interface TeamItem {
   id: string;
   name: string;
   tier: 'main' | 'academy' | 'community';
-  tierLabel: string;
-  division: string;
   image: string;
   accentColor: string;
   glowColor: string;
-  badge: string;
-  game: string;
-  status: string;
-  description: string;
-  applyRole: 'main' | 'academy' | 'creator';
 }
 
 export const TEAMS_DATA: TeamItem[] = [
@@ -350,102 +118,41 @@ export const TEAMS_DATA: TeamItem[] = [
     id: 'team-pro-main',
     name: 'Fazix eSports Main',
     tier: 'main',
-    tierLabel: 'PRO',
-    division: 'RLCS Europe · Main Event',
     image: '/images/teams/fazix_main.jpg',
     accentColor: '#00E5FF',
-    glowColor: 'rgba(0, 229, 255, 0.4)',
-    badge: 'RLCS EUROPE',
-    game: 'Rocket League 3v3',
-    status: 'ACTIVE ROSTER',
-    description: 'Our premier starting 3v3 lineup competing in the Rocket League Championship Series (RLCS) Europe against top-tier organizations.',
-    applyRole: 'main'
+    glowColor: 'rgba(0, 229, 255, 0.4)'
   },
   {
     id: 'team-pro-semi',
     name: 'Fazix eSports Semi',
     tier: 'main',
-    tierLabel: 'PRO',
-    division: 'RLCS Europe · Semi-Pro',
     image: '/images/teams/fazix_semi.jpg',
     accentColor: '#B800FF',
-    glowColor: 'rgba(184, 0, 255, 0.4)',
-    badge: 'SEMI-PRO',
-    game: 'Rocket League 3v3',
-    status: 'ACTIVE ROSTER',
-    description: 'High-level competitive roster competing in open qualifiers, scrim leagues, and regional European tournaments.',
-    applyRole: 'main'
+    glowColor: 'rgba(184, 0, 255, 0.4)'
   },
   {
     id: 'team-academy',
     name: 'Fazix eSports Academy',
     tier: 'academy',
-    tierLabel: 'ACADEMY',
-    division: 'Fazix Rising · Developmental Roster',
     image: '/images/teams/fazix_academy.jpg',
     accentColor: '#FF4D00',
-    glowColor: 'rgba(255, 77, 0, 0.4)',
-    badge: 'ACADEMY',
-    game: 'Rocket League 3v3',
-    status: 'DEVELOPMENT',
-    description: 'Dedicated talent incubator developing GC3 to SSL players with structured scrims, tactical coaching, and path-to-pro opportunities.',
-    applyRole: 'academy'
+    glowColor: 'rgba(255, 77, 0, 0.4)'
   },
   {
     id: 'team-community-vyro',
     name: 'Fazix Vyro eSports',
     tier: 'community',
-    tierLabel: 'COMMUNITY',
-    division: 'Fazix Community Division',
     image: '/images/teams/fazix_vyro.jpg',
     accentColor: '#00E640',
-    glowColor: 'rgba(0, 230, 64, 0.4)',
-    badge: 'COMMUNITY',
-    game: 'Rocket League 3v3',
-    status: 'ACTIVE ROSTER',
-    description: 'Official community-backed squad competing in weekly community cups, amateur circuits, and internal league tournaments.',
-    applyRole: 'academy'
+    glowColor: 'rgba(0, 230, 64, 0.4)'
   },
   {
     id: 'team-community-orbit',
     name: 'Fazix Orbit eSports',
     tier: 'community',
-    tierLabel: 'COMMUNITY',
-    division: 'Fazix Community Division',
     image: '/images/teams/fazix_orbit.png',
     accentColor: '#0077FF',
-    glowColor: 'rgba(0, 119, 255, 0.4)',
-    badge: 'COMMUNITY',
-    game: 'Rocket League 3v3',
-    status: 'ACTIVE ROSTER',
-    description: 'Dynamic community lineup active in ranked 6mans brackets, open European cups, and inter-org showmatches.',
-    applyRole: 'academy'
-  }
-];
-
-const ROSTER_TIERS: RosterTier[] = [
-  {
-    id: 'main',
-    title: 'PRO',
-    iconType: 'user',
-    image: '/images/teams/fazix_main.jpg',
-    description: 'In our Pro teams, our players compete in top European leagues against the best of the best.',
-    division: 'PRO'
-  },
-  {
-    id: 'academy',
-    title: 'ACADEMY',
-    iconType: 'star',
-    image: '/images/teams/fazix_academy.jpg',
-    description: 'In our Academy teams, talented players gain their first competitive experience at the highest regional level.',
-    division: 'ACADEMY'
-  },
-  {
-    id: 'community',
-    title: 'COMMUNITY',
-    iconType: 'shield',
-    image: '/images/teams/fazix_vyro.jpg',
-    description: 'Our community also participates with amateur squads in open leagues, keeping fun and growth at the forefront.'
+    glowColor: 'rgba(0, 119, 255, 0.4)'
   }
 ];
 
@@ -456,20 +163,18 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
 
   const rosterTiers: RosterTier[] = [
     {
-      id: 'main',
-      title: 'PRO',
-      iconType: 'user',
-      image: '/images/teams/fazix_main.jpg',
-      description: t.roster.tierMainDesc,
-      division: 'PRO'
-    },
-    {
       id: 'academy',
       title: 'ACADEMY',
       iconType: 'star',
       image: '/images/teams/fazix_academy.jpg',
-      description: t.roster.tierAcademyDesc,
-      division: 'ACADEMY'
+      description: t.roster.tierAcademyDesc
+    },
+    {
+      id: 'main',
+      title: 'PRO',
+      iconType: 'user',
+      image: '/images/teams/fazix_main.jpg',
+      description: t.roster.tierMainDesc
     },
     {
       id: 'community',
@@ -482,7 +187,6 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
 
   const [selectedTier, setSelectedTier] = useState<'all' | 'main' | 'academy' | 'community'>('all');
   const [showRosterDetails, setShowRosterDetails] = useState(true);
-  const [activeTeam, setActiveTeam] = useState<TeamItem | null>(null);
   const [articles, setArticles] = useState<Article[]>(
     initialArticles && initialArticles.length > 0 ? initialArticles : ARTICLES_DATA
   );
@@ -1389,28 +1093,20 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
                   }}
                 >
                   <span style={{ opacity: 0.85 }}>*</span>
-                  <span>COMMUNITY</span>
+                  <span>ACADEMY</span>
                   <span style={{ opacity: 0.85 }}>*</span>
                   <span>PRO</span>
                   <span style={{ opacity: 0.85 }}>*</span>
-                  <span>ACADEMY</span>
+                  <span>COMMUNITY</span>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="container">
-            {/* 3 Tier Cards: ACADEMY, MAIN, COMMUNITY (Podium stepped layout) */}
+            {/* 3 Tier Cards: ACADEMY, MAIN (PRO), COMMUNITY (Podium stepped layout with PRO elevated in middle) */}
             <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                gap: '24px',
-                maxWidth: '1100px',
-                margin: '0 auto',
-                paddingTop: '36px',
-                alignItems: 'start'
-              }}
+              className="rosters-podium-grid"
             >
               {rosterTiers.map((tier) => {
                 const isSelected = showRosterDetails && selectedTier === tier.id;
@@ -1571,23 +1267,10 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
                           whiteSpace: 'nowrap',
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '8px',
                           transition: 'all 0.18s ease'
                         }}
                       >
                         <span>{tab.label}</span>
-                        <span
-                          style={{
-                            fontSize: '0.72rem',
-                            fontWeight: 800,
-                            padding: '2px 7px',
-                            borderRadius: '10px',
-                            backgroundColor: isActive ? '#000000' : '#22222C',
-                            color: isActive ? '#FFFFFF' : '#888898'
-                          }}
-                        >
-                          {tab.count}
-                        </span>
                       </button>
                     );
                   })}
@@ -1604,7 +1287,6 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
                   {(selectedTier === 'all' ? TEAMS_DATA : TEAMS_DATA.filter((t) => t.tier === selectedTier)).map((team) => (
                     <article
                       key={team.id}
-                      onClick={() => setActiveTeam(team)}
                       style={{
                         backgroundColor: '#111116',
                         borderRadius: '10px',
@@ -1612,7 +1294,6 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
                         overflow: 'hidden',
                         display: 'flex',
                         flexDirection: 'column',
-                        cursor: 'pointer',
                         transition: 'transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease',
                         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)'
                       }}
@@ -1667,157 +1348,25 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
                             transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
                           }}
                         />
-
-                        {/* Top Badges */}
-                        <div style={{ position: 'absolute', top: '14px', left: '14px', zIndex: 2 }}>
-                          <span
-                            style={{
-                              fontSize: '0.72rem',
-                              fontWeight: 800,
-                              letterSpacing: '0.06em',
-                              textTransform: 'uppercase',
-                              color: team.accentColor,
-                              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                              border: `1px solid ${team.accentColor}44`,
-                              padding: '4px 10px',
-                              borderRadius: '4px',
-                              backdropFilter: 'blur(8px)'
-                            }}
-                          >
-                            {team.badge}
-                          </span>
-                        </div>
-
-                        <div style={{ position: 'absolute', top: '14px', right: '14px', zIndex: 2 }}>
-                          <span
-                            style={{
-                              fontSize: '0.7rem',
-                              fontWeight: 700,
-                              letterSpacing: '0.04em',
-                              color: '#34D399',
-                              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                              border: '1px solid rgba(52, 211, 153, 0.3)',
-                              padding: '4px 9px',
-                              borderRadius: '4px',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '5px',
-                              backdropFilter: 'blur(8px)'
-                            }}
-                          >
-                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#34D399', display: 'inline-block' }} />
-                            {team.status}
-                          </span>
-                        </div>
                       </div>
 
-                      {/* Card Body */}
-                      <div style={{ padding: '20px 22px 24px 22px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                        <div style={{ fontSize: '0.76rem', fontWeight: 700, color: team.accentColor, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
-                          {team.division}
-                        </div>
-
+                      {/* Card Body - Clean Centered Team Name */}
+                      <div style={{ padding: '22px 24px 26px 24px', textAlign: 'center' }}>
                         <h3
                           style={{
                             fontFamily: 'var(--font-helvetica)',
                             fontStyle: 'italic',
                             fontWeight: 900,
-                            fontSize: '1.35rem',
+                            fontSize: '1.4rem',
                             lineHeight: 1.15,
                             letterSpacing: '-0.02em',
                             textTransform: 'uppercase',
                             color: '#FFFFFF',
-                            margin: '0 0 10px 0'
+                            margin: 0
                           }}
                         >
                           {team.name}
                         </h3>
-
-                        <p
-                          style={{
-                            fontSize: '0.84rem',
-                            color: '#A0A0B0',
-                            lineHeight: 1.55,
-                            margin: '0 0 18px 0',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden'
-                          }}
-                        >
-                          {team.description}
-                        </p>
-
-                        {/* Bottom Actions */}
-                        <div
-                          style={{
-                            marginTop: 'auto',
-                            paddingTop: '16px',
-                            borderTop: '1px solid #1C1C26',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px'
-                          }}
-                        >
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveTeam(team);
-                            }}
-                            style={{
-                              flex: 1,
-                              backgroundColor: '#181822',
-                              color: '#FFFFFF',
-                              border: '1px solid #2C2C3C',
-                              borderRadius: '6px',
-                              padding: '9px 14px',
-                              fontSize: '0.82rem',
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '6px',
-                              transition: 'background-color 0.15s ease'
-                            }}
-                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#242434')}
-                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#181822')}
-                          >
-                            <span>Team Details</span>
-                            <ChevronRight size={15} />
-                          </button>
-
-                          <Link
-                            href={`/apply?role=${team.applyRole}`}
-                            onClick={(e) => e.stopPropagation()}
-                            style={{
-                              backgroundColor: 'rgba(255, 112, 30, 0.15)',
-                              color: '#FF701E',
-                              border: '1px solid rgba(255, 112, 30, 0.4)',
-                              borderRadius: '6px',
-                              padding: '9px 16px',
-                              fontSize: '0.82rem',
-                              fontWeight: 700,
-                              textDecoration: 'none',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '6px',
-                              transition: 'all 0.15s ease'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = '#FF701E';
-                              e.currentTarget.style.color = '#FFFFFF';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = 'rgba(255, 112, 30, 0.15)';
-                              e.currentTarget.style.color = '#FF701E';
-                            }}
-                          >
-                            <span>{language === 'DE' ? 'Bewerben' : 'Apply'}</span>
-                            <ArrowUpRight size={14} />
-                          </Link>
-                        </div>
                       </div>
                     </article>
                   ))}
@@ -2092,195 +1641,9 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
         </div>
       )}
 
-      {/* Team Details Modal */}
-      {activeTeam && (
-        <div className="modal-overlay" onClick={() => setActiveTeam(null)}>
-          <div
-            className="clean-card"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              maxWidth: '580px',
-              width: '100%',
-              backgroundColor: '#0E0E14',
-              border: `1px solid ${activeTeam.accentColor}55`,
-              borderRadius: '12px',
-              padding: 'clamp(24px, 4vw, 32px)',
-              position: 'relative',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              boxShadow: `0 24px 60px rgba(0, 0, 0, 0.9), 0 0 35px ${activeTeam.glowColor}`
-            }}
-          >
-            <button
-              onClick={() => setActiveTeam(null)}
-              aria-label="Close"
-              style={{
-                position: 'absolute',
-                top: '16px',
-                right: '16px',
-                background: 'rgba(255, 255, 255, 0.08)',
-                border: 'none',
-                borderRadius: '50%',
-                width: '38px',
-                height: '38px',
-                color: '#FFFFFF',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'background-color 0.15s ease',
-                zIndex: 10
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)')}
-            >
-              <X size={18} />
-            </button>
-
-            {/* Emblem Showcase with radiant ambient glow */}
-            <div
-              style={{
-                width: '190px',
-                height: '190px',
-                margin: '0 auto 20px auto',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: '-10px',
-                  borderRadius: '50%',
-                  background: `radial-gradient(circle, ${activeTeam.glowColor} 0%, transparent 70%)`,
-                  filter: 'blur(24px)',
-                  pointerEvents: 'none'
-                }}
-              />
-              <img
-                src={activeTeam.image}
-                alt={activeTeam.name}
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  objectFit: 'contain',
-                  position: 'relative',
-                  zIndex: 1,
-                  filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.95))'
-                }}
-              />
-            </div>
-
-            <div style={{ textAlign: 'center', marginBottom: '22px' }}>
-              <div
-                style={{
-                  fontSize: '0.78rem',
-                  fontWeight: 800,
-                  color: activeTeam.accentColor,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  marginBottom: '6px'
-                }}
-              >
-                {activeTeam.division}
-              </div>
-              <h3
-                style={{
-                  fontFamily: 'var(--font-helvetica)',
-                  fontStyle: 'italic',
-                  fontWeight: 900,
-                  fontSize: 'clamp(1.5rem, 4vw, 1.85rem)',
-                  color: '#FFFFFF',
-                  margin: '0 0 10px 0',
-                  textTransform: 'uppercase'
-                }}
-              >
-                {activeTeam.name}
-              </h3>
-              <p style={{ color: '#A0A0B4', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
-                {activeTeam.description}
-              </p>
-            </div>
-
-            {/* Meta Tiles */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '10px',
-                backgroundColor: '#14141C',
-                padding: '14px',
-                borderRadius: '8px',
-                marginBottom: '24px',
-                textAlign: 'center'
-              }}
-            >
-              <div>
-                <span style={{ fontSize: '0.68rem', color: '#707080', display: 'block', textTransform: 'uppercase' }}>Tier</span>
-                <span style={{ fontSize: '0.92rem', fontWeight: 800, color: activeTeam.accentColor }}>{activeTeam.tierLabel}</span>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.68rem', color: '#707080', display: 'block', textTransform: 'uppercase' }}>Game</span>
-                <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#FFFFFF' }}>{activeTeam.game}</span>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.68rem', color: '#707080', display: 'block', textTransform: 'uppercase' }}>Status</span>
-                <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#34D399' }}>{activeTeam.status}</span>
-              </div>
-            </div>
-
-            {/* Call To Action Buttons */}
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <Link
-                href={`/apply?role=${activeTeam.applyRole}`}
-                onClick={() => setActiveTeam(null)}
-                style={{
-                  flex: 1,
-                  backgroundColor: '#FF701E',
-                  color: '#FFFFFF',
-                  borderRadius: '6px',
-                  padding: '12px 18px',
-                  fontSize: '0.88rem',
-                  fontWeight: 700,
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px'
-                }}
-              >
-                <span>{language === 'DE' ? 'Für dieses Team bewerben' : 'Apply for this Team'}</span>
-                <ArrowUpRight size={16} />
-              </Link>
-              <a
-                href="https://discord.gg/UdnGPHmvcT"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  backgroundColor: '#1E1E28',
-                  color: '#FFFFFF',
-                  border: '1px solid #323244',
-                  borderRadius: '6px',
-                  padding: '12px 18px',
-                  fontSize: '0.88rem',
-                  fontWeight: 600,
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px'
-                }}
-              >
-                <span>Discord Trials</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
 export default HomeClient;
+
