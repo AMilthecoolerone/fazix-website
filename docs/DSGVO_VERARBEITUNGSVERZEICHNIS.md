@@ -10,7 +10,7 @@
 - **Sitz:** Nordrhein-Westfalen (NRW), Deutschland
 - **Vertretungsberechtigte:** FAZIX Management Board
 - **E-Mail:** [management@fazix.gg](mailto:management@fazix.gg)
-- **Website:** [https://fazix.gg](https://fazix.gg)
+- **Website:** [https://fazix-esport.xyz](https://fazix-esport.xyz) (Markenauftritt: fazix.gg)
 - **Datenschutz-Kontakt:** [privacy@fazix.gg](mailto:privacy@fazix.gg) bzw. [management@fazix.gg](mailto:management@fazix.gg)
 
 ---
@@ -18,7 +18,7 @@
 ## 2. Übersicht der Verarbeitungstätigkeiten (Art. 30 Abs. 1 lit. b–g DSGVO)
 
 ### VT 01: Bereitstellung der Website & Server-Logfiles
-- **Zweck:** Bereitstellung des Webauftritts fazix.gg, Gewährleistung der Systemsicherheit, Missbrauchs- und DDoS-/Brute-Force-Abwehr.
+- **Zweck:** Bereitstellung des Webauftritts fazix-esport.xyz, Gewährleistung der Systemsicherheit, Missbrauchs- und DDoS-/Brute-Force-Abwehr.
 - **Rechtsgrundlage:** Art. 6 Abs. 1 lit. f DSGVO (Berechtigtes Interesse an Ausfallsicherheit und Stabilität).
 - **Betroffene Personen:** Alle Website-Besucher.
 - **Datenkategorien:** IP-Adresse, Datum und Uhrzeit des Abrufs, angeforderte URL/Ressource, HTTP-Statuscode, Referrer-URL, User-Agent (Browsertyp, Betriebssystem).
