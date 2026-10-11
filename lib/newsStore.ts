@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 
 export interface NewsArticle {
   id: string;
@@ -126,11 +127,71 @@ let inMemoryStore: NewsDatabase = {
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DATA_FILE = path.join(DATA_DIR, 'news.json');
+const TMP_FILE = path.join(os.tmpdir(), 'fazix_news.json');
 
 /**
- * Loads the news database from disk or memory
+ * Calculates reading time using ApiVerve Reading Time API (https://api.apiverve.com/v1/readingtime)
+ * with graceful fallback to standard word-count formula (200 wpm).
+ */
+export async function calculateReadingTime(text: string, wpm: number = 200): Promise<string> {
+  const apiKey = process.env.APIVERVE_API_KEY || process.env.READING_TIME_API_KEY;
+
+  if (apiKey && text && text.trim().length > 0) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+      const res = await fetch('https://api.apiverve.com/v1/readingtime', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey.trim(),
+        },
+        body: JSON.stringify({
+          text: text.slice(0, 50000),
+          wpm,
+        }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json?.status === 'ok' && json?.data?.reading_time_text) {
+          return json.data.reading_time_text;
+        }
+      }
+    } catch (error) {
+      console.warn('[NewsStore] APIVerve reading time calculation fallback:', error);
+    }
+  }
+
+  // Fallback calculation: average 200 words per minute
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.ceil(words / wpm));
+  return `${minutes} min read`;
+}
+
+/**
+ * Loads the news database from disk or memory (supports serverless /tmp fallback)
  */
 export async function getNewsDatabase(): Promise<NewsDatabase> {
+  // 1. Try reading from serverless /tmp if recently updated
+  try {
+    if (fs.existsSync(TMP_FILE)) {
+      const raw = await fs.promises.readFile(TMP_FILE, 'utf8');
+      const parsed = JSON.parse(raw) as NewsDatabase;
+      if (parsed && Array.isArray(parsed.articles)) {
+        inMemoryStore = parsed;
+        return inMemoryStore;
+      }
+    }
+  } catch {
+    // Proceed to standard data file
+  }
+
+  // 2. Try reading from repo data/news.json
   try {
     if (fs.existsSync(DATA_FILE)) {
       const raw = await fs.promises.readFile(DATA_FILE, 'utf8');
@@ -150,19 +211,30 @@ export async function getNewsDatabase(): Promise<NewsDatabase> {
 }
 
 /**
- * Saves the news database to disk atomically
+ * Saves the news database to disk atomically with /tmp fallback on serverless
  */
 export async function saveNewsDatabase(data: NewsDatabase): Promise<void> {
   data.lastUpdated = new Date().toISOString();
   inMemoryStore = data;
 
+  let saved = false;
   try {
     if (!fs.existsSync(DATA_DIR)) {
       await fs.promises.mkdir(DATA_DIR, { recursive: true });
     }
     await fs.promises.writeFile(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+    saved = true;
   } catch (error) {
-    console.error('[NewsStore] Failed to persist news.json to disk:', error);
+    console.warn('[NewsStore] Cannot write to data/news.json (serverless read-only filesystem), falling back to /tmp:', error);
+  }
+
+  // Serverless /tmp fallback
+  if (!saved) {
+    try {
+      await fs.promises.writeFile(TMP_FILE, JSON.stringify(data, null, 2), 'utf8');
+    } catch (tmpErr) {
+      console.warn('[NewsStore] Failed to write to /tmp fallback:', tmpErr);
+    }
   }
 }
 
@@ -216,11 +288,19 @@ export async function createArticle(params: {
   ];
   const pickedImage = defaultImages[db.articles.length % defaultImages.length];
 
+  const fullText = [
+    params.title,
+    params.summary,
+    ...paragraphs
+  ].filter(Boolean).join(' ');
+
+  const calculatedReadTime = params.readTime || (await calculateReadingTime(fullText));
+
   const newArticle: NewsArticle = {
     id,
     title: params.title.trim().toUpperCase(),
     date: formatDate(now),
-    readTime: params.readTime || `${Math.max(2, Math.ceil((paragraphs.join(' ').split(' ').length) / 130))} min read`,
+    readTime: calculatedReadTime,
     image: params.image || pickedImage,
     summary: params.summary?.trim() || fallbackSummary,
     content: paragraphs.length > 0 ? paragraphs : [params.summary || params.title],
