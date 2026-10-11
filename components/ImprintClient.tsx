@@ -193,7 +193,7 @@ export function ImprintClient() {
               </h2>
               <p style={{ margin: 0 }}>
                 E-Mail: <a href="mailto:management@fazix.gg" style={{ color: '#FF701E' }}>management@fazix.gg</a><br />
-                Website: <a href="https://fazix.gg" style={{ color: '#FF701E' }}>https://fazix.gg</a><br />
+                Website: <a href="https://fazix-esport.xyz" style={{ color: '#FF701E' }}>https://fazix-esport.xyz</a><br />
                 Community & Support: <a href="https://discord.gg/UdnGPHmvcT" target="_blank" rel="noopener noreferrer" style={{ color: '#FF701E' }}>discord.gg/UdnGPHmvcT</a>
               </p>
             </section>

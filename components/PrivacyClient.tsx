@@ -349,7 +349,7 @@ export function PrivacyClient() {
                   E-Mail: <a href="mailto:management@fazix.gg" style={{ color: '#FF701E' }}>management@fazix.gg</a>
                 </div>
                 <div>
-                  Web: <a href="https://fazix.gg" style={{ color: '#FF701E' }}>https://fazix.gg</a>
+                  Web: <a href="https://fazix-esport.xyz" style={{ color: '#FF701E' }}>https://fazix-esport.xyz</a>
                 </div>
               </div>
             </section>

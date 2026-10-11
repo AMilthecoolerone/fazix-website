@@ -711,7 +711,7 @@ export default function CreatorsPage() {
                       }}
                     >
                       <iframe
-                        src="https://player.twitch.tv/?channel=r3ulex&parent=localhost&parent=fazix.gg&autoplay=false"
+                        src="https://player.twitch.tv/?channel=r3ulex&parent=localhost&parent=fazix.gg&parent=fazix-esport.xyz&autoplay=false"
                         height="100%"
                         width="100%"
                         allowFullScreen

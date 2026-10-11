@@ -11,8 +11,10 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://fazix-esport.xyz';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://fazix.gg'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'FAZIX | European Rocket League Esports',
     template: '%s | FAZIX Rocket League',
@@ -30,7 +32,7 @@ export const metadata: Metadata = {
     'NRW esports',
     'RLCS Major'
   ],
-  authors: [{ name: 'FAZIX Esports', url: 'https://fazix.gg' }],
+  authors: [{ name: 'FAZIX Esports', url: SITE_URL }],
   creator: 'FAZIX Esports',
   publisher: 'FAZIX Esports Limited',
   formatDetection: {
@@ -39,12 +41,12 @@ export const metadata: Metadata = {
     telephone: false,
   },
   alternates: {
-    canonical: 'https://fazix.gg',
+    canonical: SITE_URL,
   },
   openGraph: {
     title: 'FAZIX | European Rocket League Esports',
     description: 'European Rocket League esports club competing in the RLCS. Based in NRW, founded in 2022.',
-    url: 'https://fazix.gg',
+    url: SITE_URL,
     siteName: 'FAZIX Esports',
     images: [
       {
@@ -85,8 +87,8 @@ const jsonLd = {
   '@type': 'SportsOrganization',
   name: 'FAZIX Esports',
   alternateName: 'FAZIX',
-  url: 'https://fazix.gg',
-  logo: 'https://fazix.gg/images/hero_banner.jpg',
+  url: SITE_URL,
+  logo: `${SITE_URL}/images/hero_banner.jpg`,
   sport: 'Esports',
   description: 'European Rocket League club competing in the RLCS. Based in NRW.',
   sameAs: [
