@@ -329,28 +329,122 @@ interface RosterTier {
   division?: string;
 }
 
-const ROSTER_TIERS: RosterTier[] = [
+export interface TeamItem {
+  id: string;
+  name: string;
+  tier: 'main' | 'academy' | 'community';
+  tierLabel: string;
+  division: string;
+  image: string;
+  accentColor: string;
+  glowColor: string;
+  badge: string;
+  game: string;
+  status: string;
+  description: string;
+  applyRole: 'main' | 'academy' | 'creator';
+}
+
+export const TEAMS_DATA: TeamItem[] = [
   {
-    id: 'academy',
-    title: 'ACADEMY',
-    iconType: 'star',
-    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
-    description: 'In our Academy teams, talented players gain their first competitive experience at the highest regional level.',
-    division: 'FAZIX RISING (ACADEMY)'
+    id: 'team-pro-main',
+    name: 'Fazix eSports Main',
+    tier: 'main',
+    tierLabel: 'PRO',
+    division: 'RLCS Europe · Main Event',
+    image: '/images/teams/fazix_main.jpg',
+    accentColor: '#00E5FF',
+    glowColor: 'rgba(0, 229, 255, 0.4)',
+    badge: 'RLCS EUROPE',
+    game: 'Rocket League 3v3',
+    status: 'ACTIVE ROSTER',
+    description: 'Our premier starting 3v3 lineup competing in the Rocket League Championship Series (RLCS) Europe against top-tier organizations.',
+    applyRole: 'main'
   },
+  {
+    id: 'team-pro-semi',
+    name: 'Fazix eSports Semi',
+    tier: 'main',
+    tierLabel: 'PRO',
+    division: 'RLCS Europe · Semi-Pro',
+    image: '/images/teams/fazix_semi.jpg',
+    accentColor: '#B800FF',
+    glowColor: 'rgba(184, 0, 255, 0.4)',
+    badge: 'SEMI-PRO',
+    game: 'Rocket League 3v3',
+    status: 'ACTIVE ROSTER',
+    description: 'High-level competitive roster competing in open qualifiers, scrim leagues, and regional European tournaments.',
+    applyRole: 'main'
+  },
+  {
+    id: 'team-academy',
+    name: 'Fazix eSports Academy',
+    tier: 'academy',
+    tierLabel: 'ACADEMY',
+    division: 'Fazix Rising · Developmental Roster',
+    image: '/images/teams/fazix_academy.jpg',
+    accentColor: '#FF4D00',
+    glowColor: 'rgba(255, 77, 0, 0.4)',
+    badge: 'ACADEMY',
+    game: 'Rocket League 3v3',
+    status: 'DEVELOPMENT',
+    description: 'Dedicated talent incubator developing GC3 to SSL players with structured scrims, tactical coaching, and path-to-pro opportunities.',
+    applyRole: 'academy'
+  },
+  {
+    id: 'team-community-vyro',
+    name: 'Fazix Vyro eSports',
+    tier: 'community',
+    tierLabel: 'COMMUNITY',
+    division: 'Fazix Community Division',
+    image: '/images/teams/fazix_vyro.jpg',
+    accentColor: '#00E640',
+    glowColor: 'rgba(0, 230, 64, 0.4)',
+    badge: 'COMMUNITY',
+    game: 'Rocket League 3v3',
+    status: 'ACTIVE ROSTER',
+    description: 'Official community-backed squad competing in weekly community cups, amateur circuits, and internal league tournaments.',
+    applyRole: 'academy'
+  },
+  {
+    id: 'team-community-orbit',
+    name: 'Fazix Orbit eSports',
+    tier: 'community',
+    tierLabel: 'COMMUNITY',
+    division: 'Fazix Community Division',
+    image: '/images/teams/fazix_orbit.png',
+    accentColor: '#0077FF',
+    glowColor: 'rgba(0, 119, 255, 0.4)',
+    badge: 'COMMUNITY',
+    game: 'Rocket League 3v3',
+    status: 'ACTIVE ROSTER',
+    description: 'Dynamic community lineup active in ranked 6mans brackets, open European cups, and inter-org showmatches.',
+    applyRole: 'academy'
+  }
+];
+
+const ROSTER_TIERS: RosterTier[] = [
   {
     id: 'main',
     title: 'PRO',
     iconType: 'user',
-    image: 'https://images.unsplash.com/photo-1560253023-3ec5d502959f?auto=format&fit=crop&w=800&q=80',
+    image: '/images/teams/fazix_main.jpg',
     description: 'In our Pro teams, our players compete in top European leagues against the best of the best.',
-    division: 'RLCS EUROPE (MAIN)'
+    division: 'PRO'
+  },
+  {
+    id: 'academy',
+    title: 'ACADEMY',
+    iconType: 'star',
+    image: '/images/teams/fazix_academy.jpg',
+    description: 'In our Academy teams, talented players gain their first competitive experience at the highest regional level.',
+    division: 'ACADEMY'
   },
   {
     id: 'community',
     title: 'COMMUNITY',
     iconType: 'shield',
-    image: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=800&q=80',
+    image: '/images/teams/fazix_vyro.jpg',
     description: 'Our community also participates with amateur squads in open leagues, keeping fun and growth at the forefront.'
   }
 ];
@@ -362,35 +456,33 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
 
   const rosterTiers: RosterTier[] = [
     {
-      id: 'academy',
-      title: 'ACADEMY',
-      iconType: 'star',
-      image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
-      description: t.roster.tierAcademyDesc,
-      division: 'FAZIX RISING (ACADEMY)'
-    },
-    {
       id: 'main',
       title: 'PRO',
       iconType: 'user',
-      image: 'https://images.unsplash.com/photo-1560253023-3ec5d502959f?auto=format&fit=crop&w=800&q=80',
+      image: '/images/teams/fazix_main.jpg',
       description: t.roster.tierMainDesc,
-      division: 'RLCS EUROPE (MAIN)'
+      division: 'PRO'
+    },
+    {
+      id: 'academy',
+      title: 'ACADEMY',
+      iconType: 'star',
+      image: '/images/teams/fazix_academy.jpg',
+      description: t.roster.tierAcademyDesc,
+      division: 'ACADEMY'
     },
     {
       id: 'community',
       title: 'COMMUNITY',
       iconType: 'shield',
-      image: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=800&q=80',
+      image: '/images/teams/fazix_vyro.jpg',
       description: t.roster.tierCommunityDesc
     }
   ];
 
-  const [selectedDivision, setSelectedDivision] = useState('RLCS EUROPE (MAIN)');
-  const [selectedTier, setSelectedTier] = useState<'academy' | 'main' | 'community'>('main');
-  const [showRosterDetails, setShowRosterDetails] = useState(false);
-  const [activePlayer, setActivePlayer] = useState<Player | null>(null);
-  const [showAllRoster, setShowAllRoster] = useState(false);
+  const [selectedTier, setSelectedTier] = useState<'all' | 'main' | 'academy' | 'community'>('all');
+  const [showRosterDetails, setShowRosterDetails] = useState(true);
+  const [activeTeam, setActiveTeam] = useState<TeamItem | null>(null);
   const [articles, setArticles] = useState<Article[]>(
     initialArticles && initialArticles.length > 0 ? initialArticles : ARTICLES_DATA
   );
@@ -1328,37 +1420,35 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
                     key={tier.id}
                     onClick={() => {
                       setSelectedTier(tier.id);
-                      if (tier.division) {
-                        setSelectedDivision(tier.division);
-                      }
                       setShowRosterDetails(true);
-                      setShowAllRoster(false);
                     }}
                     className={`roster-tier-card ${isMain ? 'roster-tier-main' : ''}`}
                     style={{
                       backgroundColor: '#1E1E22',
-                      borderRadius: '6px',
+                      borderRadius: '8px',
                       overflow: 'hidden',
                       border: isSelected ? '1px solid #FF701E' : isMain ? '1px solid #363642' : '1px solid #282830',
                       boxShadow: isSelected
-                        ? '0 0 20px rgba(255, 112, 30, 0.25)'
+                        ? '0 0 24px rgba(255, 112, 30, 0.35)'
                         : isMain
                           ? '0 16px 36px rgba(0, 0, 0, 0.65)'
                           : '0 8px 24px rgba(0, 0, 0, 0.4)',
                       cursor: 'pointer',
                       display: 'flex',
-                      flexDirection: 'column'
+                      flexDirection: 'column',
+                      transition: 'all 0.2s ease'
                     }}
                   >
-                    {/* Top Picture */}
-                    <div style={{ height: isMain ? '205px' : '185px', width: '100%', overflow: 'hidden', backgroundColor: '#141418' }}>
+                    {/* Top Picture / Team Logo */}
+                    <div style={{ height: isMain ? '215px' : '195px', width: '100%', overflow: 'hidden', backgroundColor: '#07070A', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
                       <img
                         src={tier.image}
-                        alt={`${tier.title} tier`}
+                        alt={`${tier.title} team emblem`}
                         style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
+                          maxHeight: '100%',
+                          maxWidth: '100%',
+                          objectFit: 'contain',
+                          filter: 'drop-shadow(0 4px 14px rgba(0,0,0,0.85))'
                         }}
                       />
                     </div>
@@ -1434,212 +1524,304 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
                   e.currentTarget.style.color = '#FFFFFF';
                 }}
               >
-                {showRosterDetails ? t.roster.collapseBtn : t.roster.exploreBtn}
+                {showRosterDetails ? (language === 'DE' ? 'TEAMS EINKLAPPEN' : 'COLLAPSE TEAMS') : (language === 'DE' ? 'ALLE TEAMS ENTDECKEN' : 'EXPLORE ALL TEAMS')}
               </button>
             </div>
 
-            {/* Expandable Detailed Rosters Grid */}
+            {/* Expandable Detailed Teams Grid */}
             {showRosterDetails && (
               <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid #1C1C24' }}>
-                {/* Division Switcher */}
-                <div className="no-scrollbar" style={{ display: 'flex', gap: '10px', marginBottom: '28px', overflowX: 'auto', paddingBottom: '6px', WebkitOverflowScrolling: 'touch', justifyContent: 'center' }}>
-                  {['RLCS EUROPE (MAIN)', 'FAZIX RISING (ACADEMY)'].map((division) => (
-                    <button
-                      key={division}
-                      onClick={() => {
-                        setSelectedDivision(division);
-                        setSelectedTier(division.includes('MAIN') ? 'main' : 'academy');
-                        setShowAllRoster(false);
-                      }}
-                      style={{
-                        backgroundColor: selectedDivision === division && selectedTier !== 'community' ? '#FFFFFF' : '#141418',
-                        color: selectedDivision === division && selectedTier !== 'community' ? '#000000' : '#A0A0A8',
-                        border: '1px solid',
-                        borderColor: selectedDivision === division && selectedTier !== 'community' ? '#FFFFFF' : '#23232A',
-                        padding: '11px 22px',
-                        borderRadius: 'var(--radius-md)',
-                        fontFamily: 'var(--font-helvetica)',
-                        fontSize: '0.88rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        whiteSpace: 'nowrap',
-                        flexShrink: 0
-                      }}
-                    >
-                      {division.includes('MAIN') ? t.roster.divMain : t.roster.divAcademy}
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => setSelectedTier('community')}
-                    style={{
-                      backgroundColor: selectedTier === 'community' ? '#FFFFFF' : '#141418',
-                      color: selectedTier === 'community' ? '#000000' : '#A0A0A8',
-                      border: '1px solid',
-                      borderColor: selectedTier === 'community' ? '#FFFFFF' : '#23232A',
-                      padding: '11px 22px',
-                      borderRadius: 'var(--radius-md)',
-                      fontFamily: 'var(--font-helvetica)',
-                      fontSize: '0.88rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      flexShrink: 0
-                    }}
-                  >
-                    {t.roster.divCommunityTab}
-                  </button>
+                {/* Team Tier Filter Switcher */}
+                <div
+                  className="no-scrollbar"
+                  style={{
+                    display: 'flex',
+                    gap: '10px',
+                    marginBottom: '32px',
+                    overflowX: 'auto',
+                    paddingBottom: '6px',
+                    WebkitOverflowScrolling: 'touch',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap'
+                  }}
+                >
+                  {[
+                    { id: 'all' as const, label: language === 'DE' ? 'ALLE TEAMS' : 'ALL TEAMS', count: TEAMS_DATA.length },
+                    { id: 'main' as const, label: 'PRO', count: TEAMS_DATA.filter((t) => t.tier === 'main').length },
+                    { id: 'academy' as const, label: 'ACADEMY', count: TEAMS_DATA.filter((t) => t.tier === 'academy').length },
+                    { id: 'community' as const, label: 'COMMUNITY', count: TEAMS_DATA.filter((t) => t.tier === 'community').length }
+                  ].map((tab) => {
+                    const isActive = selectedTier === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => setSelectedTier(tab.id)}
+                        style={{
+                          backgroundColor: isActive ? '#FFFFFF' : '#141418',
+                          color: isActive ? '#000000' : '#A0A0A8',
+                          border: '1px solid',
+                          borderColor: isActive ? '#FFFFFF' : '#23232A',
+                          padding: '11px 24px',
+                          borderRadius: 'var(--radius-md)',
+                          fontFamily: 'var(--font-helvetica)',
+                          fontSize: '0.88rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          whiteSpace: 'nowrap',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          transition: 'all 0.18s ease'
+                        }}
+                      >
+                        <span>{tab.label}</span>
+                        <span
+                          style={{
+                            fontSize: '0.72rem',
+                            fontWeight: 800,
+                            padding: '2px 7px',
+                            borderRadius: '10px',
+                            backgroundColor: isActive ? '#000000' : '#22222C',
+                            color: isActive ? '#FFFFFF' : '#888898'
+                          }}
+                        >
+                          {tab.count}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
 
-                {selectedTier === 'community' ? (
-                  <div
-                    style={{
-                      backgroundColor: '#121218',
-                      border: '1px solid #23232E',
-                      borderRadius: '8px',
-                      padding: '36px 28px',
-                      textAlign: 'center',
-                      maxWidth: '720px',
-                      margin: '0 auto'
-                    }}
-                  >
-                    <Shield size={34} color="#FF701E" style={{ margin: '0 auto 12px auto' }} />
-                    <h3
+                {/* Teams Grid: responsive cards */}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))',
+                    gap: '24px'
+                  }}
+                >
+                  {(selectedTier === 'all' ? TEAMS_DATA : TEAMS_DATA.filter((t) => t.tier === selectedTier)).map((team) => (
+                    <article
+                      key={team.id}
+                      onClick={() => setActiveTeam(team)}
                       style={{
-                        fontFamily: 'var(--font-helvetica)',
-                        fontStyle: 'italic',
-                        fontWeight: 900,
-                        fontSize: '1.45rem',
-                        color: '#FFFFFF',
-                        marginBottom: '8px'
+                        backgroundColor: '#111116',
+                        borderRadius: '10px',
+                        border: '1px solid #22222E',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        cursor: 'pointer',
+                        transition: 'transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease',
+                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = team.accentColor;
+                        e.currentTarget.style.transform = 'translateY(-4px)';
+                        e.currentTarget.style.boxShadow = `0 14px 34px rgba(0, 0, 0, 0.7), 0 0 24px ${team.glowColor}`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = '#22222E';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.4)';
                       }}
                     >
-                      {t.roster.communityCardTitle}
-                    </h3>
-                    <p style={{ color: '#A0A0B0', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '22px' }}>
-                      {t.roster.communityCardDesc}
-                    </p>
-                    <a
-                      href="https://discord.gg/UdnGPHmvcT"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-white"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '12px 28px',
-                        fontSize: '0.88rem',
-                        fontWeight: 700
-                      }}
-                    >
-                      <span>{t.roster.joinTrialsBtn}</span>
-                      <ArrowUpRight size={15} />
-                    </a>
-                  </div>
-                ) : (
-                  <>
-                    {/* Athletes Grid: fully responsive down to 320px */}
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))',
-                      gap: '20px'
-                    }}>
-                      {((ROSTERS_DATA[selectedDivision] || []).slice(0, showAllRoster ? undefined : 3)).map((player) => (
-                        <article
-                          key={player.id}
-                          onClick={() => setActivePlayer(player)}
-                          className="clean-card"
+                      {/* Emblem Picture Container */}
+                      <div
+                        style={{
+                          height: '270px',
+                          backgroundColor: '#07070A',
+                          position: 'relative',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          overflow: 'hidden',
+                          padding: '24px'
+                        }}
+                      >
+                        {/* Subtle radial ambient glow behind wolf logo */}
+                        <div
                           style={{
-                            cursor: 'pointer',
-                            overflow: 'hidden',
-                            display: 'flex',
-                            flexDirection: 'column'
+                            position: 'absolute',
+                            width: '180px',
+                            height: '180px',
+                            borderRadius: '50%',
+                            background: `radial-gradient(circle, ${team.glowColor} 0%, transparent 70%)`,
+                            filter: 'blur(32px)',
+                            opacity: 0.65,
+                            pointerEvents: 'none'
                           }}
-                        >
-                          <div style={{ height: '320px', backgroundColor: '#16161E', position: 'relative', overflow: 'hidden' }}>
-                            <img
-                              src={player.avatar}
-                              alt={`${player.nickname} - ${player.role}`}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                objectPosition: 'top center'
-                              }}
-                            />
-                            <div style={{
-                              position: 'absolute',
-                              inset: 0,
-                              background: 'linear-gradient(180deg, transparent 45%, rgba(0, 0, 0, 0.94) 100%)'
-                            }} />
+                        />
 
-                            <div style={{ position: 'absolute', bottom: '18px', left: '18px' }}>
-                              <div style={{ fontSize: '0.8rem', color: 'var(--color-orange)', fontWeight: 600, marginBottom: '2px' }}>
-                                {player.role}
-                              </div>
-                              <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#FFFFFF', lineHeight: 1 }}>
-                                {player.nickname}
-                              </div>
-                              <div style={{ fontSize: '0.82rem', color: '#A0A0A8', marginTop: '4px' }}>
-                                {player.realName} · {player.country} ({player.car})
-                              </div>
-                            </div>
-                          </div>
-
-                          <div style={{
-                            padding: '16px 18px',
-                            backgroundColor: '#0E0E12',
-                            borderTop: '1px solid #1A1A22',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
-                          }}>
-                            <div>
-                              <span style={{ fontSize: '0.7rem', color: '#6A6A74', display: 'block' }}>{t.roster.peakMmr}</span>
-                              <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#FFFFFF' }}>{player.peakMmr}</span>
-                            </div>
-                            <div>
-                              <span style={{ fontSize: '0.7rem', color: '#6A6A74', display: 'block' }}>{t.roster.winRate}</span>
-                              <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#FFFFFF' }}>{player.winRate}</span>
-                            </div>
-                            <ChevronRight size={18} color="#6A6A74" />
-                          </div>
-                        </article>
-                      ))}
-                    </div>
-
-                    {/* See More Roster Button */}
-                    {(ROSTERS_DATA[selectedDivision] || []).length > 3 && (
-                      <div style={{ marginTop: '36px', textAlign: 'center' }}>
-                        <button
-                          onClick={() => setShowAllRoster(!showAllRoster)}
-                          className="btn btn-outline"
+                        <img
+                          src={team.image}
+                          alt={team.name}
                           style={{
-                            padding: '13px 32px',
-                            fontSize: '0.92rem',
-                            fontWeight: 600,
-                            borderRadius: '6px',
-                            backgroundColor: '#121216',
-                            border: '1px solid #282834',
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '8px'
+                            maxHeight: '100%',
+                            maxWidth: '100%',
+                            objectFit: 'contain',
+                            position: 'relative',
+                            zIndex: 1,
+                            filter: 'drop-shadow(0 6px 16px rgba(0,0,0,0.85))',
+                            transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
                           }}
-                        >
-                          <span>{showAllRoster ? t.roster.showStarting : t.roster.seeMore}</span>
-                          <ChevronDown
-                            size={16}
+                        />
+
+                        {/* Top Badges */}
+                        <div style={{ position: 'absolute', top: '14px', left: '14px', zIndex: 2 }}>
+                          <span
                             style={{
-                              transform: showAllRoster ? 'rotate(180deg)' : 'none',
-                              transition: 'transform 0.2s ease'
+                              fontSize: '0.72rem',
+                              fontWeight: 800,
+                              letterSpacing: '0.06em',
+                              textTransform: 'uppercase',
+                              color: team.accentColor,
+                              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                              border: `1px solid ${team.accentColor}44`,
+                              padding: '4px 10px',
+                              borderRadius: '4px',
+                              backdropFilter: 'blur(8px)'
                             }}
-                          />
-                        </button>
+                          >
+                            {team.badge}
+                          </span>
+                        </div>
+
+                        <div style={{ position: 'absolute', top: '14px', right: '14px', zIndex: 2 }}>
+                          <span
+                            style={{
+                              fontSize: '0.7rem',
+                              fontWeight: 700,
+                              letterSpacing: '0.04em',
+                              color: '#34D399',
+                              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                              border: '1px solid rgba(52, 211, 153, 0.3)',
+                              padding: '4px 9px',
+                              borderRadius: '4px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '5px',
+                              backdropFilter: 'blur(8px)'
+                            }}
+                          >
+                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#34D399', display: 'inline-block' }} />
+                            {team.status}
+                          </span>
+                        </div>
                       </div>
-                    )}
-                  </>
-                )}
+
+                      {/* Card Body */}
+                      <div style={{ padding: '20px 22px 24px 22px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                        <div style={{ fontSize: '0.76rem', fontWeight: 700, color: team.accentColor, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
+                          {team.division}
+                        </div>
+
+                        <h3
+                          style={{
+                            fontFamily: 'var(--font-helvetica)',
+                            fontStyle: 'italic',
+                            fontWeight: 900,
+                            fontSize: '1.35rem',
+                            lineHeight: 1.15,
+                            letterSpacing: '-0.02em',
+                            textTransform: 'uppercase',
+                            color: '#FFFFFF',
+                            margin: '0 0 10px 0'
+                          }}
+                        >
+                          {team.name}
+                        </h3>
+
+                        <p
+                          style={{
+                            fontSize: '0.84rem',
+                            color: '#A0A0B0',
+                            lineHeight: 1.55,
+                            margin: '0 0 18px 0',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                          }}
+                        >
+                          {team.description}
+                        </p>
+
+                        {/* Bottom Actions */}
+                        <div
+                          style={{
+                            marginTop: 'auto',
+                            paddingTop: '16px',
+                            borderTop: '1px solid #1C1C26',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px'
+                          }}
+                        >
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveTeam(team);
+                            }}
+                            style={{
+                              flex: 1,
+                              backgroundColor: '#181822',
+                              color: '#FFFFFF',
+                              border: '1px solid #2C2C3C',
+                              borderRadius: '6px',
+                              padding: '9px 14px',
+                              fontSize: '0.82rem',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '6px',
+                              transition: 'background-color 0.15s ease'
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#242434')}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#181822')}
+                          >
+                            <span>Team Details</span>
+                            <ChevronRight size={15} />
+                          </button>
+
+                          <Link
+                            href={`/apply?role=${team.applyRole}`}
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                              backgroundColor: 'rgba(255, 112, 30, 0.15)',
+                              color: '#FF701E',
+                              border: '1px solid rgba(255, 112, 30, 0.4)',
+                              borderRadius: '6px',
+                              padding: '9px 16px',
+                              fontSize: '0.82rem',
+                              fontWeight: 700,
+                              textDecoration: 'none',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              transition: 'all 0.15s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = '#FF701E';
+                              e.currentTarget.style.color = '#FFFFFF';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = 'rgba(255, 112, 30, 0.15)';
+                              e.currentTarget.style.color = '#FF701E';
+                            }}
+                          >
+                            <span>{language === 'DE' ? 'Bewerben' : 'Apply'}</span>
+                            <ArrowUpRight size={14} />
+                          </Link>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -1910,92 +2092,189 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
         </div>
       )}
 
-      {/* Player Modal: Rocket League Stats & Gear */}
-      {activePlayer && (
-        <div className="modal-overlay" onClick={() => setActivePlayer(null)}>
+      {/* Team Details Modal */}
+      {activeTeam && (
+        <div className="modal-overlay" onClick={() => setActiveTeam(null)}>
           <div
             className="clean-card"
             onClick={(e) => e.stopPropagation()}
             style={{
-              maxWidth: '640px',
+              maxWidth: '580px',
               width: '100%',
-              backgroundColor: '#101014',
-              padding: 'clamp(20px, 4vw, 28px)',
+              backgroundColor: '#0E0E14',
+              border: `1px solid ${activeTeam.accentColor}55`,
+              borderRadius: '12px',
+              padding: 'clamp(24px, 4vw, 32px)',
               position: 'relative',
               maxHeight: '90vh',
-              overflowY: 'auto'
+              overflowY: 'auto',
+              boxShadow: `0 24px 60px rgba(0, 0, 0, 0.9), 0 0 35px ${activeTeam.glowColor}`
             }}
           >
             <button
-              onClick={() => setActivePlayer(null)}
+              onClick={() => setActiveTeam(null)}
               aria-label="Close"
               style={{
                 position: 'absolute',
-                top: '14px',
-                right: '14px',
+                top: '16px',
+                right: '16px',
                 background: 'rgba(255, 255, 255, 0.08)',
                 border: 'none',
                 borderRadius: '50%',
-                width: '40px',
-                height: '40px',
+                width: '38px',
+                height: '38px',
                 color: '#FFFFFF',
                 cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'background-color 0.15s ease',
+                zIndex: 10
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)')}
+            >
+              <X size={18} />
+            </button>
+
+            {/* Emblem Showcase with radiant ambient glow */}
+            <div
+              style={{
+                width: '190px',
+                height: '190px',
+                margin: '0 auto 20px auto',
+                position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}
             >
-              <X size={18} />
-            </button>
-
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '22px', flexWrap: 'wrap' }}>
-              <img
-                src={activePlayer.avatar}
-                alt={activePlayer.nickname}
-                style={{ width: '74px', height: '74px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '-10px',
+                  borderRadius: '50%',
+                  background: `radial-gradient(circle, ${activeTeam.glowColor} 0%, transparent 70%)`,
+                  filter: 'blur(24px)',
+                  pointerEvents: 'none'
+                }}
               />
-              <div style={{ minWidth: 0, flexGrow: 1 }}>
-                <span style={{ fontSize: '0.78rem', color: 'var(--color-orange)', fontWeight: 600, display: 'block' }}>
-                  {activePlayer.division} · {activePlayer.role}
-                </span>
-                <h3 style={{ fontSize: 'clamp(1.5rem, 5vw, 1.8rem)', color: '#FFFFFF', fontWeight: 700, margin: '2px 0' }}>
-                  {activePlayer.nickname}
-                </h3>
-                <span style={{ color: '#8E8E98', fontSize: '0.84rem', display: 'block' }}>
-                  {activePlayer.realName} · {activePlayer.country} ({activePlayer.car})
-                </span>
+              <img
+                src={activeTeam.image}
+                alt={activeTeam.name}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  objectFit: 'contain',
+                  position: 'relative',
+                  zIndex: 1,
+                  filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.95))'
+                }}
+              />
+            </div>
+
+            <div style={{ textAlign: 'center', marginBottom: '22px' }}>
+              <div
+                style={{
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  color: activeTeam.accentColor,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  marginBottom: '6px'
+                }}
+              >
+                {activeTeam.division}
+              </div>
+              <h3
+                style={{
+                  fontFamily: 'var(--font-helvetica)',
+                  fontStyle: 'italic',
+                  fontWeight: 900,
+                  fontSize: 'clamp(1.5rem, 4vw, 1.85rem)',
+                  color: '#FFFFFF',
+                  margin: '0 0 10px 0',
+                  textTransform: 'uppercase'
+                }}
+              >
+                {activeTeam.name}
+              </h3>
+              <p style={{ color: '#A0A0B4', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
+                {activeTeam.description}
+              </p>
+            </div>
+
+            {/* Meta Tiles */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '10px',
+                backgroundColor: '#14141C',
+                padding: '14px',
+                borderRadius: '8px',
+                marginBottom: '24px',
+                textAlign: 'center'
+              }}
+            >
+              <div>
+                <span style={{ fontSize: '0.68rem', color: '#707080', display: 'block', textTransform: 'uppercase' }}>Tier</span>
+                <span style={{ fontSize: '0.92rem', fontWeight: 800, color: activeTeam.accentColor }}>{activeTeam.tierLabel}</span>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.68rem', color: '#707080', display: 'block', textTransform: 'uppercase' }}>Game</span>
+                <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#FFFFFF' }}>{activeTeam.game}</span>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.68rem', color: '#707080', display: 'block', textTransform: 'uppercase' }}>Status</span>
+                <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#34D399' }}>{activeTeam.status}</span>
               </div>
             </div>
 
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(85px, 1fr))',
-              gap: '10px',
-              marginBottom: '20px',
-              backgroundColor: '#16161C',
-              padding: '14px',
-              borderRadius: 'var(--radius-md)'
-            }}>
-              <div>
-                <span style={{ fontSize: '0.7rem', color: '#6A6A74', display: 'block' }}>{t.roster.peakMmr}</span>
-                <span style={{ fontSize: '0.96rem', fontWeight: 700, color: '#FFFFFF' }}>{activePlayer.peakMmr}</span>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.7rem', color: '#6A6A74', display: 'block' }}>{t.roster.winRate}</span>
-                <span style={{ fontSize: '0.96rem', fontWeight: 700, color: '#FFFFFF' }}>{activePlayer.winRate}</span>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.7rem', color: '#6A6A74', display: 'block' }}>{t.roster.mainCar}</span>
-                <span style={{ fontSize: '0.96rem', fontWeight: 700, color: '#FFFFFF' }}>{activePlayer.car}</span>
-              </div>
-            </div>
-
-            <h4 style={{ fontSize: '0.82rem', color: '#A0A0A8', marginBottom: '10px' }}>{t.roster.competitiveSetup}</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.82rem', color: '#D1D1D6' }}>
-              <div>{t.roster.controller}: <strong>{activePlayer.gear.controller}</strong></div>
-              <div>{t.roster.camera}: <strong>{activePlayer.gear.camera}</strong></div>
-              <div>{t.roster.display}: <strong>{activePlayer.gear.monitor}</strong></div>
-              <div>{t.roster.signatureMechanic}: <strong>{activePlayer.signatureMechanic}</strong></div>
+            {/* Call To Action Buttons */}
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <Link
+                href={`/apply?role=${activeTeam.applyRole}`}
+                onClick={() => setActiveTeam(null)}
+                style={{
+                  flex: 1,
+                  backgroundColor: '#FF701E',
+                  color: '#FFFFFF',
+                  borderRadius: '6px',
+                  padding: '12px 18px',
+                  fontSize: '0.88rem',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+              >
+                <span>{language === 'DE' ? 'Für dieses Team bewerben' : 'Apply for this Team'}</span>
+                <ArrowUpRight size={16} />
+              </Link>
+              <a
+                href="https://discord.gg/UdnGPHmvcT"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  backgroundColor: '#1E1E28',
+                  color: '#FFFFFF',
+                  border: '1px solid #323244',
+                  borderRadius: '6px',
+                  padding: '12px 18px',
+                  fontSize: '0.88rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+              >
+                <span>Discord Trials</span>
+              </a>
             </div>
           </div>
         </div>
