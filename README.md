@@ -1,6 +1,6 @@
 # FAZIX Esports — Official Website
 
-Official website for **FAZIX Esports** (`fazix.gg`), built with [Next.js 16](https://nextjs.org/) App Router, [React 19](https://react.dev/), and TypeScript.
+Official website for **FAZIX Esports** (`fazix-esport.xyz`), built with [Next.js 16](https://nextjs.org/) App Router, [React 19](https://react.dev/), and TypeScript.
 
 ---
 

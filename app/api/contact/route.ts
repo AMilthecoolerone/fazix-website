@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
+import { forwardContactEmail, TARGET_CONTACT_EMAIL } from '@/lib/mailer';
 
 export async function POST(req: Request) {
   try {
@@ -52,21 +53,23 @@ export async function POST(req: Request) {
       );
     }
 
-    // In a live environment, this would forward to management email or Discord webhook
-    console.log('[FAZIX CONTACT INQUIRY]', {
-      timestamp: new Date().toISOString(),
-      ip,
-      category: category || 'General / Management',
+    // Forward the inquiry to fazixesports@gmail.com
+    const mailResult = await forwardContactEmail({
       name: name.trim(),
       email: email.trim(),
-      organization: organization?.trim() || 'N/A',
-      subject: subject?.trim() || 'No subject',
-      messageLength: message.trim().length,
+      category: category || 'General / Management',
+      organization: organization?.trim(),
+      subject: subject?.trim(),
+      message: message.trim(),
+      ip,
     });
 
     return NextResponse.json({
       success: true,
-      message: 'Your message has been delivered to Fazix management.',
+      message: 'Your message has been forwarded to Fazix management (fazixesports@gmail.com).',
+      target: TARGET_CONTACT_EMAIL,
+      delivered: mailResult.delivered,
+      method: mailResult.method,
     });
   } catch (error) {
     console.error('Contact API error:', error);

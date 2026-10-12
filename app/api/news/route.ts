@@ -15,6 +15,8 @@ import {
   updateTicker,
   clearTicker,
   deleteArticle,
+  approveArticle,
+  updateArticleStatus,
 } from '@/lib/newsStore';
 
 export const dynamic = 'force-dynamic';
@@ -61,7 +63,12 @@ export async function GET(req: Request) {
       );
     }
 
-    const articles = db.articles.slice(0, Math.max(1, Math.min(limit, 50)));
+    const includeAll = searchParams.get('includeAll') === 'true';
+    const filteredArticles = includeAll
+      ? db.articles
+      : db.articles.filter(a => !a.status || a.status === 'published');
+
+    const articles = filteredArticles.slice(0, Math.max(1, Math.min(limit, 50)));
 
     return NextResponse.json(
       {
@@ -69,7 +76,7 @@ export async function GET(req: Request) {
         ticker: db.ticker?.isActive ? db.ticker : null,
         articles,
         count: articles.length,
-        total: db.articles.length,
+        total: filteredArticles.length,
         lastUpdated: db.lastUpdated,
       },
       {
@@ -231,6 +238,34 @@ export async function POST(req: Request) {
       );
     }
 
+    // 5b. Action: Approve an article (editorial release)
+    if (action === 'approve_article') {
+      const { id } = body;
+      if (!id || typeof id !== 'string') {
+        return NextResponse.json(
+          { success: false, error: 'Article ID is required for approval' },
+          { status: 400, headers: responseHeaders }
+        );
+      }
+
+      const approved = await approveArticle(id);
+      if (!approved) {
+        return NextResponse.json(
+          { success: false, error: `Article with ID "${id}" was not found` },
+          { status: 404, headers: responseHeaders }
+        );
+      }
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: `Article ${id} approved and published successfully`,
+          article: approved,
+        },
+        { headers: responseHeaders }
+      );
+    }
+
     // 6. Action: Create News Article (with optional top ticker activation)
     if (action === 'create_article') {
       const {
@@ -243,6 +278,7 @@ export async function POST(req: Request) {
         readTime,
         url,
         pinned,
+        status,
         setTicker,
         tickerText,
         tickerBadge,
@@ -267,6 +303,7 @@ export async function POST(req: Request) {
         readTime,
         url,
         pinned,
+        status: status || 'published',
         setTicker: Boolean(setTicker),
         tickerText,
         tickerBadge,

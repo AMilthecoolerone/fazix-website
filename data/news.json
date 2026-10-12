@@ -1,196 +1,31 @@
 {
   "ticker": {
-    "id": "ticker-1791667675231",
-    "badge": "NEWS",
-    "text": "Neues Signing",
+    "id": "ticker-1791727722626",
+    "badge": "",
+    "text": "test",
     "link": "#news",
-    "articleId": "news-bot-1791667675224",
-    "priority": "high",
+    "priority": "normal",
     "isActive": true,
-    "updatedAt": "2026-10-10T21:27:55.224Z"
+    "updatedAt": "2026-10-11T14:08:42.626Z"
   },
   "articles": [
     {
-      "id": "news-bot-1791667705435",
-      "title": "TAWTA",
-      "date": "October 10, 2026",
-      "readTime": "2 min read",
-      "image": "/images/news/news_qualifier.jpg",
-      "summary": "twata",
-      "content": [
-        "hallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallohallo",
-        "hallo\nhallo\nhallo\nhallo\nhallo"
-      ],
-      "badge": "NEWS",
-      "author": "Discord News Bot",
-      "pinned": false,
-      "source": "discord",
-      "createdAt": "2026-10-10T21:28:25.435Z"
-    },
-    {
-      "id": "news-bot-1791667675224",
-      "title": "NEUES SIGNING",
-      "date": "October 10, 2026",
-      "readTime": "2 min read",
-      "image": "https://cdn.discordapp.com/ephemeral-attachments/1558083005766180996/1558591930013847622/aircards-Trump_Gold_Card.png?ex=6acbff59&is=6acaadd9&hm=6b1b06d7fa06f97ce4c37dfec280fce545aca9939f8ba1b06e8d893fd140119a&",
-      "summary": "Wir haben neue spieler unter vertrag",
-      "content": [
-        "HhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhalloHhallo"
-      ],
-      "badge": "NEWS",
-      "author": "Discord News Bot",
-      "pinned": false,
-      "source": "discord",
-      "createdAt": "2026-10-10T21:27:55.224Z"
-    },
-    {
-      "id": "news-bot-1791648817580",
-      "title": "HUREN",
-      "date": "October 10, 2026",
-      "readTime": "2 min read",
-      "image": "/images/news/news_bootcamp.jpg",
-      "summary": "Hier ist unser neuer player",
-      "content": [
-        "Tstsdawdadawdaw"
-      ],
-      "badge": "NEWS",
-      "author": "Discord News Bot",
-      "pinned": false,
-      "source": "discord",
-      "createdAt": "2026-10-10T16:13:37.580Z"
-    },
-    {
-      "id": "news-bot-1791548157445",
+      "id": "news-bot-1791727706819",
       "title": "TEST",
-      "date": "October 9, 2026",
-      "readTime": "2 min read",
-      "image": "/images/news/news_hardware.jpg",
-      "summary": "testtttt",
-      "content": [
-        "yoeeeee"
-      ],
-      "badge": "TEST",
-      "author": "Discord News Bot",
-      "pinned": false,
-      "source": "discord",
-      "createdAt": "2026-10-09T12:15:57.445Z"
-    },
-    {
-      "id": "news-bot-1791546644639",
-      "title": "NEW FUCKING SIGNING",
-      "date": "October 9, 2026",
-      "readTime": "2 min read",
+      "date": "October 11, 2026",
+      "readTime": "1 min read",
       "image": "/images/news/news_qualifier.jpg",
       "summary": "test",
       "content": [
-        "Welcome to the team"
+        "trest"
       ],
-      "badge": "TEST",
+      "badge": "NEWS",
       "author": "Discord News Bot",
       "pinned": false,
+      "status": "published",
       "source": "discord",
-      "createdAt": "2026-10-09T11:50:44.639Z"
-    },
-    {
-      "id": "news-bot-1791545651068",
-      "title": "NEW ROSTER SIGNING",
-      "date": "October 9, 2026",
-      "readTime": "2 min read",
-      "image": "/images/news/news_qualifier.jpg",
-      "summary": "Welcoming our substitute",
-      "content": [
-        "Welcoming our substitute"
-      ],
-      "badge": "ROSTER",
-      "author": "Discord News Bot",
-      "pinned": false,
-      "source": "discord",
-      "createdAt": "2026-10-09T11:34:11.068Z"
-    },
-    {
-      "id": "news-bot-1791545479645",
-      "title": "FAZIX SWISS STAGE PREVIEW",
-      "date": "October 9, 2026",
-      "readTime": "2 min read",
-      "image": "/images/news/news_qualifier.jpg",
-      "summary": "Coach K4RMA discusses match preparation.",
-      "content": [
-        "Coach K4RMA discusses match preparation."
-      ],
-      "badge": "PREVIEW",
-      "author": "Discord News Bot",
-      "pinned": false,
-      "source": "discord",
-      "createdAt": "2026-10-09T11:31:19.645Z"
-    },
-    {
-      "id": "news-1",
-      "title": "RLCS REGIONAL 1 MAIN EVENT QUALIFIER",
-      "date": "October 4, 2026",
-      "readTime": "4 min read",
-      "image": "/images/news/news_qualifier.jpg",
-      "summary": "A clutch Game 7 overtime victory against Team BDS secures our starting 3v3 roster a direct spot in the RLCS Europe swiss stage.",
-      "content": [
-        "Following a grueling seven-game series in the final qualifying round, FAZIX locked in their seed for the RLCS Europe Regional 1 Main Event.",
-        "After dropping games two and four to heavy defensive counterattacks, captain Zenith converted a backboard ceiling pass from Aura at 2:48 into overtime to close out Champions Field.",
-        "The starting roster will now enter a week-long bootcamp at the Fazix training facility in NRW to prepare for Friday’s swiss bracket matches."
-      ],
-      "badge": "RLCS",
-      "author": "FAZIX Esports",
-      "source": "system",
-      "createdAt": "2026-10-04T19:00:00.000Z"
-    },
-    {
-      "id": "news-2",
-      "title": "BEHIND THE COMMS: GAME 5 DEFENSIVE HOLD",
-      "date": "September 28, 2026",
-      "readTime": "6 min read",
-      "image": "/images/news/news_defense.jpg",
-      "summary": "Coach K4RMA and striker Zenith break down the backboard rotations, boost denial, and comms that held off a 12-shot barrage in overtime.",
-      "content": [
-        "Defense in modern Rocket League is rarely about highlight goal-line saves. It is about closing down shooting lanes before the opponent gets clean contact on the ball.",
-        "In this technical replay review, Head Coach K4RMA steps through the team’s communications during the 4-minute overtime hold against Karmine Corp.",
-        "By managing small boost pad routes through the midfield, Vortex and Aura maintained third-man coverage without conceding midfield ball control."
-      ],
-      "badge": "TACTICS",
-      "author": "Coach K4RMA",
-      "source": "system",
-      "createdAt": "2026-09-28T14:30:00.000Z"
-    },
-    {
-      "id": "news-3",
-      "title": "FAZIX RISING: 2026 ACADEMY LINEUP",
-      "date": "September 19, 2026",
-      "readTime": "3 min read",
-      "image": "/images/news/news_hardware.jpg",
-      "summary": "Welcoming Pulse, Cypher, and Nexus to our developmental squad as they prepare for the weekly European open circuits.",
-      "content": [
-        "FAZIX is pleased to announce our 2026 developmental lineup for Fazix Rising, our official academy team.",
-        "Selected from over 140 applicants across the European ladder, Pulse (Denmark), Cypher (Sweden), and Nexus (Italy) will represent Fazix across regional open circuits and ranked 6mans brackets.",
-        "The squad will train under academy coach Echo, with direct scrimmage access against our main RLCS team."
-      ],
-      "badge": "ACADEMY",
-      "author": "Fazix Management",
-      "source": "system",
-      "createdAt": "2026-09-19T11:00:00.000Z"
-    },
-    {
-      "id": "news-4",
-      "title": "NRW BOOTCAMP & FACILITY PREP",
-      "date": "September 12, 2026",
-      "readTime": "5 min read",
-      "image": "/images/news/news_bootcamp.jpg",
-      "summary": "Two weeks of double practice blocks, tactical reviews with coach K4RMA, and LAN setup rehearsal ahead of the European playoffs.",
-      "content": [
-        "The entire Fazix Rocket League squad has arrived at our team facility in North Rhine-Westphalia for a two-week intensive training camp.",
-        "Training focuses on comms pacing under pressure, defensive clears off the backboard, and set-piece kickoffs.",
-        "Fans can watch behind-the-scenes vlogs on our YouTube channel throughout the bootcamp."
-      ],
-      "badge": "BOOTCAMP",
-      "author": "Fazix Media",
-      "source": "system",
-      "createdAt": "2026-09-12T16:00:00.000Z"
+      "createdAt": "2026-10-11T14:08:26.819Z"
     }
   ],
-  "lastUpdated": "2026-10-10T21:28:25.435Z"
+  "lastUpdated": "2026-10-11T14:08:42.626Z"
 }

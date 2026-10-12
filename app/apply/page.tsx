@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { CheckCircle2, ArrowLeft, Trophy, Target, Shield, HelpCircle, Send, AlertCircle } from 'lucide-react';
+import { CheckCircle2, ArrowLeft, Trophy, Target, Send, AlertCircle } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { TRANSLATIONS } from '@/lib/translations';
 
@@ -12,7 +12,7 @@ export default function ApplyPage() {
   const { language } = useLanguage();
   const t = TRANSLATIONS[language] || TRANSLATIONS.EN;
 
-  const [role, setRole] = useState<'main' | 'academy' | 'coach' | 'creator'>('main');
+  const [role, setRole] = useState<'main' | 'academy' | 'creator'>('main');
   const [ign, setIgn] = useState('');
   const [fullName, setFullName] = useState('');
   const [age, setAge] = useState('');
@@ -58,6 +58,33 @@ export default function ApplyPage() {
         setErrorMessage(data.error || 'Failed to submit application. Please try again.');
         setIsSubmitting(false);
         return;
+      }
+
+      // Forward directly to fazixesports@gmail.com via Web3Forms from the browser
+      const web3Key = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || '821b6b58-3db1-4b64-9b47-acad70852981';
+      if (web3Key) {
+        fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            access_key: web3Key,
+            subject: `[FAZIX Application] ${role.toUpperCase()} Trial: ${ign} (${discord})`,
+            from_name: fullName || ign,
+            email: 'fazixesports@gmail.com',
+            replyto: discord,
+            role,
+            ign,
+            full_name: fullName || 'N/A',
+            age,
+            country,
+            discord,
+            tracker_url: trackerUrl || 'N/A',
+            message: `Role: ${role.toUpperCase()}\nIGN: ${ign}\nFull Name: ${fullName || 'N/A'}\nAge: ${age}\nCountry: ${country}\nDiscord: ${discord}\nTracker: ${trackerUrl || 'N/A'}\n\nCompetitive Experience:\n${competitiveExp || 'N/A'}\n\nNotes & Availability:\n${notes || 'N/A'}`,
+          }),
+        }).catch((err) => console.warn('Web3Forms dispatch warning:', err));
       }
 
       setIsSubmitting(false);
@@ -119,7 +146,7 @@ export default function ApplyPage() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
               gap: '16px',
               marginBottom: '48px'
             }}
@@ -161,26 +188,6 @@ export default function ApplyPage() {
                 <li>Active, reliable, mature, & respectful</li>
                 <li>Team player, open to criticism, & willing to learn</li>
                 <li>Available for weekly tournaments</li>
-              </ul>
-            </div>
-
-            <div
-              className="clean-card"
-              style={{
-                padding: '22px',
-                backgroundColor: '#0C0C10',
-                border: '1px solid #202028'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                <Shield size={18} color="#FFFFFF" />
-                <h2 style={{ fontSize: '1rem', fontWeight: 700, margin: 0 }}>{t.apply.tierStaffTitle}</h2>
-              </div>
-              <ul style={{ paddingLeft: '18px', color: '#8E8E98', fontSize: '0.84rem', lineHeight: 1.6, margin: 0 }}>
-                <li>Experience with ballchasing.com replays</li>
-                <li>Boost tracking and rotation analysis</li>
-                <li>Opponent scouting reports</li>
-                <li>1-on-1 replay coaching</li>
               </ul>
             </div>
           </div>
@@ -273,7 +280,6 @@ export default function ApplyPage() {
                   {[
                     { id: 'main', label: t.apply.posMain },
                     { id: 'academy', label: t.apply.posAcademy },
-                    { id: 'coach', label: t.apply.posCoach },
                     { id: 'creator', label: t.apply.posCreator }
                   ].map((item) => (
                     <button
@@ -480,7 +486,7 @@ export default function ApplyPage() {
                   rows={2}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Your usual evening schedule (CET) and any additional context for our coaching staff."
+                  placeholder="Your usual evening schedule (CET) and any additional context for our team."
                   style={{
                     width: '100%',
                     padding: '12px 14px',

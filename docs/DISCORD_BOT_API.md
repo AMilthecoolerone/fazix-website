@@ -1,6 +1,6 @@
 # FAZIX Esports — Discord Bot & Website News API
 
-Secure communication API between the FAZIX Discord Bot and the `fazix.gg` website.
+Secure communication API between the FAZIX Discord Bot and the `fazix-esport.xyz` website.
 
 Allows moderators and Discord bots to:
 1. **Push live breaking news tickers & banners** with a pulsing badge that scroll across the top of every screen on the website.
@@ -208,7 +208,7 @@ Response (200 OK):
 ```javascript
 import { Client, GatewayIntentBits, SlashCommandBuilder } from 'discord.js';
 
-const WEBSITE_API = process.env.FAZIX_API_URL || 'https://fazix.gg';
+const WEBSITE_API = process.env.FAZIX_API_URL || 'https://fazix-esport.xyz';
 const BOT_SECRET = process.env.FAZIX_DISCORD_BOT_SECRET;
 
 // 1. Slash command: /banner

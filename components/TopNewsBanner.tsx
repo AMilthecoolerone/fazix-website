@@ -69,7 +69,7 @@ export const TopNewsBanner: React.FC<TopNewsBannerProps> = ({
 
   // Synchronize CSS variable so entire layout adjusts seamlessly
   useEffect(() => {
-    const isShowing = Boolean(isVisible && ticker?.isActive && !isDismissed);
+    const isShowing = Boolean(isVisible && ticker?.isActive && ticker?.text?.trim() && !isDismissed);
     if (typeof document !== 'undefined') {
       document.documentElement.style.setProperty(
         '--top-banner-height',
@@ -146,7 +146,7 @@ export const TopNewsBanner: React.FC<TopNewsBannerProps> = ({
     }
   };
 
-  if (!ticker || !ticker.isActive || isDismissed) {
+  if (!ticker || !ticker.isActive || !ticker.text?.trim() || isDismissed) {
     return null;
   }
 

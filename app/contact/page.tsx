@@ -75,6 +75,28 @@ export default function ContactPage() {
         return;
       }
 
+      // Forward directly to fazixesports@gmail.com via Web3Forms from the browser
+      const web3Key = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || '821b6b58-3db1-4b64-9b47-acad70852981';
+      if (web3Key) {
+        fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            access_key: web3Key,
+            subject: `[FAZIX Contact] ${category || categories[0]}: ${subject || 'New Inquiry'} (${name})`,
+            from_name: name,
+            email,
+            replyto: email,
+            category: category || categories[0],
+            organization: organization || 'N/A',
+            message: `From: ${name} (${email})\nOrganization: ${organization || 'N/A'}\nTopic: ${category || categories[0]}\nSubject: ${subject || 'N/A'}\n\nMessage:\n${message}`,
+          }),
+        }).catch((err) => console.warn('Web3Forms dispatch warning:', err));
+      }
+
       setIsSubmitting(false);
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -189,11 +211,28 @@ export default function ContactPage() {
                       fontSize: '0.98rem',
                       lineHeight: 1.6,
                       maxWidth: '520px',
-                      margin: '0 auto 28px auto',
+                      margin: '0 auto 16px auto',
                     }}
                   >
                     {name ? `${name} · ` : ''}{t.contact.successDesc}
                   </p>
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 16px',
+                      backgroundColor: 'rgba(255, 89, 0, 0.08)',
+                      border: '1px solid rgba(255, 89, 0, 0.25)',
+                      borderRadius: '6px',
+                      fontSize: '0.85rem',
+                      color: '#FF8844',
+                      marginBottom: '26px',
+                    }}
+                  >
+                    <Mail size={14} />
+                    <span>Forwarded directly to <strong>fazixesports@gmail.com</strong></span>
+                  </div>
                   <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
                     <Link
                       href="/"
@@ -561,7 +600,7 @@ export default function ContactPage() {
                         color: '#6A6A74',
                       }}
                     >
-                      {t.contact.rateLimitNotice}
+                      {t.contact.rateLimitNotice} · All inquiries forward to fazixesports@gmail.com
                     </div>
                   </div>
                 </form>

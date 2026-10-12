@@ -115,7 +115,7 @@ const getDropdownData = (lang: LanguageCode): Record<string, DropdownItem[]> => 
             style={{ width: '28px', height: '20px', objectFit: 'contain' }}
           />
         ),
-        href: '/#partners'
+        href: 'https://discord.gg/7J9AaYSa4J'
       },
       {
         title: 'ROC E-Sports',
@@ -127,7 +127,7 @@ const getDropdownData = (lang: LanguageCode): Record<string, DropdownItem[]> => 
             style={{ width: '22px', height: '22px', objectFit: 'contain' }}
           />
         ),
-        href: '/#partners'
+        href: 'https://discord.gg/ThnwcpuSuJ'
       },
       {
         title: t.nav.partnersDropdown.partnerWithTitle,
@@ -457,6 +457,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection, initi
                           <a
                             key={drop.title}
                             href={drop.href}
+                            target={drop.href.startsWith('http') ? '_blank' : undefined}
+                            rel={drop.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                             onClick={(e) => {
                               if (!drop.href.startsWith('http')) {
                                 e.preventDefault();

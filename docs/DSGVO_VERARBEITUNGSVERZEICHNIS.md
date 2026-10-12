@@ -6,12 +6,12 @@
 
 ## 1. Angaben zum Verantwortlichen (Art. 30 Abs. 1 lit. a DSGVO)
 
-- **Name der Organisation:** FAZIX Esports Club (Rocket League European Operations)
-- **Sitz:** Nordrhein-Westfalen (NRW), Deutschland
-- **Vertretungsberechtigte:** FAZIX Management Board
-- **E-Mail:** [management@fazix.gg](mailto:management@fazix.gg)
-- **Website:** [https://fazix-esport.xyz](https://fazix-esport.xyz) (Markenauftritt: fazix.gg)
-- **Datenschutz-Kontakt:** [privacy@fazix.gg](mailto:privacy@fazix.gg) bzw. [management@fazix.gg](mailto:management@fazix.gg)
+- **Name der Organisation / Anbieter:** Jason Gabriel / FAZIX Esports
+- **Sitz & Postanschrift:** Spillingsbreede 10, 32429 Minden, Deutschland
+- **Verantwortliche Person:** Jason Gabriel
+- **E-Mail:** [fazixesports@gmail.com](mailto:fazixesports@gmail.com)
+- **Website:** [https://fazix-esport.xyz](https://fazix-esport.xyz)
+- **Datenschutz-Kontakt:** [fazixesports@gmail.com](mailto:fazixesports@gmail.com)
 
 ---
 
@@ -49,10 +49,10 @@
 
 ### VT 04: News-Ticker & Discord-Bot Schnittstelle
 - **Zweck:** Synchronisation von Ankündigungen und Neuigkeiten zwischen internem Discord-Server und öffentlicher Website.
-- **Rechtsgrundlage:** Art. 6 Abs. 1 lit. f DSGVO (Berechtigtes Interesse an automatisierter redaktioneller Veröffentlichung).
-- **Betroffene Personen:** Autoren/Staff (Discord-ID bei Bot-Aktionen).
-- **Datenkategorien:** Redaktionelle Inhalte (Titel, Summary, Content), Autorentitel („Discord Bot“), Zeitstempel. Keine Speicherung personenbezogener Fan-Daten.
-- **Empfänger:** Lokale Dateispeicherung (`data/news.json`), keine Weitergabe an Dritte.
+- **Rechtsgrundlage:** Art. 6 Abs. 1 lit. f DSGVO (Berechtigtes Interesse an automatisierter redaktioneller Veröffentlichung und visueller Berichterstattung).
+- **Betroffene Personen:** Autoren/Staff (Discord-ID bei Bot-Aktionen), Website-Besucher bei Bildabruf.
+- **Datenkategorien:** Redaktionelle Inhalte (Titel, Summary, Content), Autorentitel („Discord Bot“), Zeitstempel; bei News-Grafiken IP-Adresse des Besuchers an Content Delivery Network (Discord CDN). Keine Speicherung personenbezogener Fan-Daten.
+- **Empfänger:** Lokale Dateispeicherung (`data/news.json`); bei extern eingebundenen News-Grafiken Auslieferung via Discord CDN (Discord Inc., USA, Art. 49 Abs. 1 lit. b DSGVO / Standardvertragsklauseln).
 - **Löschfrist:** Verbleibt im News-Archiv bis zur manuellen Archivierung/Löschung über den Bot (`/news delete`).
 
 ---

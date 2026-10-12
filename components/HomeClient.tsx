@@ -7,7 +7,7 @@ import { Footer } from './Footer';
 import type { NewsTicker } from '@/lib/newsStore';
 import { useLanguage } from '@/context/LanguageContext';
 import { TRANSLATIONS } from '@/lib/translations';
-import { ChevronLeft, ChevronRight, ChevronDown, X, ArrowUpRight, Star, User, Shield } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, X, ArrowUpRight, Star, User, Shield, Newspaper } from 'lucide-react';
 
 export interface HomeClientProps {
   initialArticles?: Article[];
@@ -26,75 +26,15 @@ interface Article {
   author?: string;
 }
 
-const ARTICLES_DATA: Article[] = [
-  {
-    id: 'news-1',
-    title: 'RLCS REGIONAL 1 MAIN EVENT QUALIFIER',
-    date: 'October 4, 2026',
-    readTime: '4 min read',
-    image: '/images/news/news_qualifier.jpg',
-    summary: 'A clutch Game 7 overtime victory against Team BDS secures our starting 3v3 roster a direct spot in the RLCS Europe swiss stage.',
-    content: [
-      'Following a grueling seven-game series in the final qualifying round, FAZIX locked in their seed for the RLCS Europe Regional 1 Main Event.',
-      'After dropping games two and four to heavy defensive counterattacks, captain Zenith converted a backboard ceiling pass from Aura at 2:48 into overtime to close out Champions Field.',
-      'The starting roster will now enter a week-long bootcamp at the Fazix training facility in NRW to prepare for Friday’s swiss bracket matches.'
-    ]
-  },
-  {
-    id: 'news-2',
-    title: 'BEHIND THE COMMS: GAME 5 DEFENSIVE HOLD',
-    date: 'September 28, 2026',
-    readTime: '6 min read',
-    image: '/images/news/news_defense.jpg',
-    summary: 'Coach K4RMA and striker Zenith break down the backboard rotations, boost denial, and comms that held off a 12-shot barrage in overtime.',
-    content: [
-      'Defense in modern Rocket League is rarely about highlight goal-line saves. It is about closing down shooting lanes before the opponent gets clean contact on the ball.',
-      'In this technical replay review, Head Coach K4RMA steps through the team’s communications during the 4-minute overtime hold against Karmine Corp.',
-      'By managing small boost pad routes through the midfield, Vortex and Aura maintained third-man coverage without conceding midfield ball control.'
-    ]
-  },
-  {
-    id: 'news-3',
-    title: 'FAZIX RISING: 2026 ACADEMY LINEUP',
-    date: 'September 19, 2026',
-    readTime: '3 min read',
-    image: '/images/news/news_hardware.jpg',
-    summary: 'Welcoming Pulse, Cypher, and Nexus to our developmental squad as they prepare for the weekly European open circuits.',
-    content: [
-      'FAZIX is pleased to announce our 2026 developmental lineup for Fazix Rising, our official academy team.',
-      'Selected from over 140 applicants across the European ladder, Pulse (Denmark), Cypher (Sweden), and Nexus (Italy) will represent Fazix across regional open circuits and ranked 6mans brackets.',
-      'The squad will train under academy coach Echo, with direct scrimmage access against our main RLCS team.'
-    ]
-  },
-  {
-    id: 'news-4',
-    title: 'NRW BOOTCAMP & FACILITY PREP',
-    date: 'September 12, 2026',
-    readTime: '5 min read',
-    image: '/images/news/news_bootcamp.jpg',
-    summary: 'Two weeks of double practice blocks, tactical reviews with coach K4RMA, and LAN setup rehearsal ahead of the European playoffs.',
-    content: [
-      'The entire Fazix Rocket League squad has arrived at our team facility in North Rhine-Westphalia for a two-week intensive training camp.',
-      'Training focuses on comms pacing under pressure, defensive clears off the backboard, and set-piece kickoffs.',
-      'Fans can watch behind-the-scenes vlogs on our YouTube channel throughout the bootcamp.'
-    ]
-  }
-];
+const ARTICLES_DATA: Article[] = [];
 
 const PARTNERS = [
-  { name: 'Beyond Modes', logo: '/images/partners/beyond_modes.png' },
-  { name: 'ROC E-Sports', logo: '/images/partners/roc_esports_transparent.png' },
+  { name: 'Beyond Modes', logo: '/images/partners/beyond_modes.png', href: 'https://discord.gg/7J9AaYSa4J' },
+  { name: 'ROC E-Sports', logo: '/images/partners/roc_esports_transparent.png', href: 'https://discord.gg/ThnwcpuSuJ' },
 ];
 
-// Repeat so wide screens never show gaps during marquee loop
-const PARTNERS_LOOP = [
-  ...PARTNERS,
-  ...PARTNERS,
-  ...PARTNERS,
-  ...PARTNERS,
-  ...PARTNERS,
-  ...PARTNERS,
-];
+// Single group: repeated 10 times (20 items = ~5200px wide) to guarantee seamless infinite loop
+const PARTNERS_GROUP = Array.from({ length: 10 }, () => PARTNERS).flat();
 
 interface RosterTier {
   id: 'academy' | 'main' | 'community';
@@ -212,7 +152,7 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
   const [selectedTier, setSelectedTier] = useState<'all' | 'main' | 'academy' | 'community'>('all');
   const [showRosterDetails, setShowRosterDetails] = useState(true);
   const [articles, setArticles] = useState<Article[]>(
-    initialArticles && initialArticles.length > 0 ? initialArticles : ARTICLES_DATA
+    initialArticles && initialArticles.length > 0 ? initialArticles : []
   );
   const [activeArticle, setActiveArticle] = useState<Article | null>(null);
   const newsSliderRef = useRef<HTMLDivElement>(null);
@@ -693,52 +633,111 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
             />
           </div>
 
-          {/* Continuous Marquee Track Moving Left with Transparent Logo Containers */}
+          {/* Continuous Infinite Marquee Track Moving Left */}
           <div className="marquee-container" style={{ padding: '6px 0' }}>
             <div className="partners-track">
-              {PARTNERS_LOOP.map((partner, idx) => (
-                <div
-                  key={`${partner.name}-${idx}`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '8px 24px',
-                    minWidth: '180px',
-                    height: '56px',
-                    flexShrink: 0,
-                    opacity: 0.8,
-                    transition: 'opacity 0.2s ease, transform 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.opacity = '1';
-                    e.currentTarget.style.transform = 'scale(1.04)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.opacity = '0.8';
-                    e.currentTarget.style.transform = 'scale(1)';
-                  }}
-                >
-                  <img
-                    src={partner.logo}
-                    alt={`${partner.name} logo`}
+              {/* Group 1 */}
+              <div className="partners-group">
+                {PARTNERS_GROUP.map((partner, idx) => (
+                  <a
+                    key={`p1-${partner.name}-${idx}`}
+                    href={partner.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${partner.name} Discord`}
                     style={{
-                      maxHeight:
-                        partner.name === 'BMW'
-                          ? '46px'
-                          : partner.name === 'ROC E-Sports'
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '8px 24px',
+                      minWidth: '180px',
+                      height: '56px',
+                      flexShrink: 0,
+                      opacity: 0.8,
+                      textDecoration: 'none',
+                      cursor: 'pointer',
+                      transition: 'opacity 0.2s ease, transform 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.opacity = '1';
+                      e.currentTarget.style.transform = 'scale(1.04)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.opacity = '0.8';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <img
+                      src={partner.logo}
+                      alt={`${partner.name} logo`}
+                      style={{
+                        maxHeight:
+                          partner.name === 'ROC E-Sports'
                             ? '48px'
                             : partner.name === 'Beyond Modes'
                               ? '38px'
                               : '36px',
-                      maxWidth: partner.name === 'Beyond Modes' ? '180px' : '160px',
-                      width: 'auto',
-                      height: 'auto',
-                      objectFit: 'contain'
+                        maxWidth: partner.name === 'Beyond Modes' ? '180px' : '160px',
+                        width: 'auto',
+                        height: 'auto',
+                        objectFit: 'contain'
+                      }}
+                    />
+                  </a>
+                ))}
+              </div>
+
+              {/* Group 2 (identical duplicate so the loop never ends or shows gaps) */}
+              <div className="partners-group" aria-hidden="true">
+                {PARTNERS_GROUP.map((partner, idx) => (
+                  <a
+                    key={`p2-${partner.name}-${idx}`}
+                    href={partner.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    tabIndex={-1}
+                    aria-label={`${partner.name} Discord`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '8px 24px',
+                      minWidth: '180px',
+                      height: '56px',
+                      flexShrink: 0,
+                      opacity: 0.8,
+                      textDecoration: 'none',
+                      cursor: 'pointer',
+                      transition: 'opacity 0.2s ease, transform 0.2s ease'
                     }}
-                  />
-                </div>
-              ))}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.opacity = '1';
+                      e.currentTarget.style.transform = 'scale(1.04)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.opacity = '0.8';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <img
+                      src={partner.logo}
+                      alt={`${partner.name} logo`}
+                      style={{
+                        maxHeight:
+                          partner.name === 'ROC E-Sports'
+                            ? '48px'
+                            : partner.name === 'Beyond Modes'
+                              ? '38px'
+                              : '36px',
+                        maxWidth: partner.name === 'Beyond Modes' ? '180px' : '160px',
+                        width: 'auto',
+                        height: 'auto',
+                        objectFit: 'contain'
+                      }}
+                    />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -832,81 +831,176 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
                 {t.news.subtitle}
               </p>
 
-              {/* Slider Navigation Arrows */}
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <button
-                  type="button"
-                  onClick={() => scrollNews('left')}
-                  aria-label="Previous news"
-                  style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '50%',
-                    backgroundColor: '#111116',
-                    border: '1px solid #22222E',
-                    color: '#FFFFFF',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#FF701E';
-                    e.currentTarget.style.color = '#FF701E';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#22222E';
-                    e.currentTarget.style.color = '#FFFFFF';
-                  }}
-                >
-                  <ChevronLeft size={18} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => scrollNews('right')}
-                  aria-label="Next news"
-                  style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '50%',
-                    backgroundColor: '#111116',
-                    border: '1px solid #22222E',
-                    color: '#FFFFFF',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#FF701E';
-                    e.currentTarget.style.color = '#FF701E';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#22222E';
-                    e.currentTarget.style.color = '#FFFFFF';
-                  }}
-                >
-                  <ChevronRight size={18} />
-                </button>
-              </div>
+              {/* Slider Navigation Arrows - only rendered when articles exist */}
+              {articles.length > 0 && (
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <button
+                    type="button"
+                    onClick={() => scrollNews('left')}
+                    aria-label="Previous news"
+                    style={{
+                      width: '38px',
+                      height: '38px',
+                      borderRadius: '50%',
+                      backgroundColor: '#111116',
+                      border: '1px solid #22222E',
+                      color: '#FFFFFF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#FF701E';
+                      e.currentTarget.style.color = '#FF701E';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#22222E';
+                      e.currentTarget.style.color = '#FFFFFF';
+                    }}
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollNews('right')}
+                    aria-label="Next news"
+                    style={{
+                      width: '38px',
+                      height: '38px',
+                      borderRadius: '50%',
+                      backgroundColor: '#111116',
+                      border: '1px solid #22222E',
+                      color: '#FFFFFF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#FF701E';
+                      e.currentTarget.style.color = '#FF701E';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#22222E';
+                      e.currentTarget.style.color = '#FFFFFF';
+                    }}
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Horizontal Slider with exact overlapping card style from Photo 1 */}
-            <div
-              ref={newsSliderRef}
-              className="no-scrollbar"
-              style={{
-                display: 'flex',
-                gap: 'clamp(20px, 3.5vw, 36px)',
-                overflowX: 'auto',
-                scrollSnapType: 'x mandatory',
-                padding: '12px 4px 24px 4px',
-                WebkitOverflowScrolling: 'touch',
-                scrollBehavior: 'auto'
-              }}
-            >
+            {/* News Content: Empty state if no articles, horizontal slider if articles exist */}
+            {articles.length === 0 ? (
+              <div
+                style={{
+                  backgroundColor: '#111116',
+                  border: '1px dashed #272733',
+                  borderRadius: '12px',
+                  padding: 'clamp(44px, 6vw, 68px) clamp(24px, 4vw, 44px)',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '16px',
+                  maxWidth: '680px',
+                  margin: '12px auto 24px auto',
+                  boxShadow: '0 12px 32px rgba(0, 0, 0, 0.4)'
+                }}
+              >
+                <div
+                  style={{
+                    width: '54px',
+                    height: '54px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255, 112, 30, 0.1)',
+                    border: '1px solid rgba(255, 112, 30, 0.28)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#FF701E'
+                  }}
+                >
+                  <Newspaper size={26} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <h3
+                    style={{
+                      fontFamily: 'var(--font-helvetica)',
+                      fontSize: 'clamp(1.1rem, 2vw, 1.35rem)',
+                      fontWeight: 800,
+                      fontStyle: 'italic',
+                      textTransform: 'uppercase',
+                      letterSpacing: '-0.01em',
+                      color: '#FFFFFF',
+                      margin: 0
+                    }}
+                  >
+                    {t.news.noNewsTitle}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: '0.9rem',
+                      color: '#8A8A96',
+                      maxWidth: '460px',
+                      margin: 0,
+                      lineHeight: 1.55
+                    }}
+                  >
+                    {t.news.noNewsDesc}
+                  </p>
+                </div>
+                <a
+                  href="https://discord.gg/UdnGPHmvcT"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    marginTop: '6px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '11px 22px',
+                    borderRadius: '6px',
+                    backgroundColor: '#181820',
+                    border: '1px solid #2B2B38',
+                    color: '#FFFFFF',
+                    fontSize: '0.86rem',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#FF701E';
+                    e.currentTarget.style.color = '#FF701E';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#2B2B38';
+                    e.currentTarget.style.color = '#FFFFFF';
+                  }}
+                >
+                  Join FAZIX Discord for Live Alerts
+                  <ArrowUpRight size={15} />
+                </a>
+              </div>
+            ) : (
+              <div
+                ref={newsSliderRef}
+                className="no-scrollbar"
+                style={{
+                  display: 'flex',
+                  gap: 'clamp(20px, 3.5vw, 36px)',
+                  overflowX: 'auto',
+                  scrollSnapType: 'x mandatory',
+                  padding: '12px 4px 24px 4px',
+                  WebkitOverflowScrolling: 'touch',
+                  scrollBehavior: 'auto'
+                }}
+              >
               {articles.map((article) => (
                 <article
                   key={article.id}
@@ -1032,6 +1126,7 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
                 </article>
               ))}
             </div>
+          )}
           </div>
         </section>
 

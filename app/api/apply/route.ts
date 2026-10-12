@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
+import { forwardApplicationEmail } from '@/lib/mailer';
 
 export async function POST(req: Request) {
   try {
@@ -41,19 +42,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Einwilligung in die Datenschutzerklärung ist erforderlich' }, { status: 400 });
     }
 
-    // In a live environment, this would forward to team scouts or a Discord webhook
-    console.log('[FAZIX ROSTER APPLICATION]', {
-      timestamp: new Date().toISOString(),
-      ip,
+    // Forward the application to fazixesports@gmail.com
+    await forwardApplicationEmail({
       role: role || 'main',
       ign: ign.trim(),
-      fullName: fullName?.trim() || 'N/A',
-      age: age?.trim() || 'N/A',
-      country: country?.trim() || 'N/A',
+      fullName: fullName?.trim(),
+      age: age?.trim(),
+      country: country?.trim(),
       discord: discord.trim(),
-      currentMmr: currentMmr?.trim() || 'N/A',
-      peakMmr: peakMmr?.trim() || 'N/A',
-      trackerUrl: trackerUrl?.trim() || 'N/A',
+      currentMmr: currentMmr?.trim(),
+      peakMmr: peakMmr?.trim(),
+      trackerUrl: trackerUrl?.trim(),
+      competitiveExp: competitiveExp?.trim(),
+      notes: notes?.trim(),
+      ip,
     });
 
     return NextResponse.json({
