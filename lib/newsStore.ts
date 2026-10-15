@@ -14,6 +14,7 @@ export interface NewsArticle {
   author?: string;
   url?: string;
   pinned?: boolean;
+  status?: 'published' | 'pending_review' | 'draft';
   source?: 'discord' | 'website' | 'system';
   createdAt: string;
 }
@@ -35,86 +36,17 @@ export interface NewsDatabase {
   lastUpdated: string;
 }
 
-// Initial seed data reflecting FAZIX RLCS European roster & achievements
-const SEED_ARTICLES: NewsArticle[] = [
-  {
-    id: 'news-1',
-    title: 'RLCS REGIONAL 1 MAIN EVENT QUALIFIER',
-    date: 'October 4, 2026',
-    readTime: '4 min read',
-    image: '/images/news/news_qualifier.jpg',
-    summary: 'A clutch Game 7 overtime victory against Team BDS secures our starting 3v3 roster a direct spot in the RLCS Europe swiss stage.',
-    content: [
-      'Following a grueling seven-game series in the final qualifying round, FAZIX locked in their seed for the RLCS Europe Regional 1 Main Event.',
-      'After dropping games two and four to heavy defensive counterattacks, captain Zenith converted a backboard ceiling pass from Aura at 2:48 into overtime to close out Champions Field.',
-      'The starting roster will now enter a week-long bootcamp at the Fazix training facility in NRW to prepare for Friday’s swiss bracket matches.'
-    ],
-    badge: 'RLCS',
-    author: 'FAZIX Esports',
-    source: 'system',
-    createdAt: '2026-10-04T19:00:00.000Z'
-  },
-  {
-    id: 'news-2',
-    title: 'BEHIND THE COMMS: GAME 5 DEFENSIVE HOLD',
-    date: 'September 28, 2026',
-    readTime: '6 min read',
-    image: '/images/news/news_defense.jpg',
-    summary: 'Coach K4RMA and striker Zenith break down the backboard rotations, boost denial, and comms that held off a 12-shot barrage in overtime.',
-    content: [
-      'Defense in modern Rocket League is rarely about highlight goal-line saves. It is about closing down shooting lanes before the opponent gets clean contact on the ball.',
-      'In this technical replay review, Head Coach K4RMA steps through the team’s communications during the 4-minute overtime hold against Karmine Corp.',
-      'By managing small boost pad routes through the midfield, Vortex and Aura maintained third-man coverage without conceding midfield ball control.'
-    ],
-    badge: 'TACTICS',
-    author: 'Coach K4RMA',
-    source: 'system',
-    createdAt: '2026-09-28T14:30:00.000Z'
-  },
-  {
-    id: 'news-3',
-    title: 'FAZIX RISING: 2026 ACADEMY LINEUP',
-    date: 'September 19, 2026',
-    readTime: '3 min read',
-    image: '/images/news/news_hardware.jpg',
-    summary: 'Welcoming Pulse, Cypher, and Nexus to our developmental squad as they prepare for the weekly European open circuits.',
-    content: [
-      'FAZIX is pleased to announce our 2026 developmental lineup for Fazix Rising, our official academy team.',
-      'Selected from over 140 applicants across the European ladder, Pulse (Denmark), Cypher (Sweden), and Nexus (Italy) will represent Fazix across regional open circuits and ranked 6mans brackets.',
-      'The squad will train under academy coach Echo, with direct scrimmage access against our main RLCS team.'
-    ],
-    badge: 'ACADEMY',
-    author: 'Fazix Management',
-    source: 'system',
-    createdAt: '2026-09-19T11:00:00.000Z'
-  },
-  {
-    id: 'news-4',
-    title: 'NRW BOOTCAMP & FACILITY PREP',
-    date: 'September 12, 2026',
-    readTime: '5 min read',
-    image: '/images/news/news_bootcamp.jpg',
-    summary: 'Two weeks of double practice blocks, tactical reviews with coach K4RMA, and LAN setup rehearsal ahead of the European playoffs.',
-    content: [
-      'The entire Fazix Rocket League squad has arrived at our team facility in North Rhine-Westphalia for a two-week intensive training camp.',
-      'Training focuses on comms pacing under pressure, defensive clears off the backboard, and set-piece kickoffs.',
-      'Fans can watch behind-the-scenes vlogs on our YouTube channel throughout the bootcamp.'
-    ],
-    badge: 'BOOTCAMP',
-    author: 'Fazix Media',
-    source: 'system',
-    createdAt: '2026-09-12T16:00:00.000Z'
-  }
-];
+// Initial seed data - clean start (no articles, ticker inactive)
+const SEED_ARTICLES: NewsArticle[] = [];
 
 const SEED_TICKER: NewsTicker = {
-  id: 'ticker-seed-1',
-  badge: 'BREAKING',
-  text: 'FAZIX QUALIFIES FOR RLCS EUROPE REGIONAL 1 MAIN EVENT — SWISS STAGE BEGINS FRIDAY AT 17:00 CET',
+  id: 'ticker-empty',
+  badge: '',
+  text: '',
   link: '#news',
-  articleId: 'news-1',
-  priority: 'high',
-  isActive: true,
+  articleId: null,
+  priority: 'normal',
+  isActive: false,
   updatedAt: new Date().toISOString()
 };
 
@@ -262,6 +194,7 @@ export async function createArticle(params: {
   readTime?: string;
   url?: string;
   pinned?: boolean;
+  status?: 'published' | 'pending_review' | 'draft';
   setTicker?: boolean;
   tickerText?: string;
   tickerBadge?: string;
@@ -295,6 +228,7 @@ export async function createArticle(params: {
   ].filter(Boolean).join(' ');
 
   const calculatedReadTime = params.readTime || (await calculateReadingTime(fullText));
+  const articleStatus = params.status || 'published';
 
   const newArticle: NewsArticle = {
     id,
@@ -308,6 +242,7 @@ export async function createArticle(params: {
     author: params.author || 'Discord Bot',
     url: params.url,
     pinned: Boolean(params.pinned),
+    status: articleStatus,
     source: 'discord',
     createdAt: now.toISOString()
   };
@@ -317,8 +252,8 @@ export async function createArticle(params: {
 
   let updatedTicker: NewsTicker | undefined;
 
-  // If setTicker is requested, update the top badge ticker
-  if (params.setTicker) {
+  // If setTicker is requested and article is published, update the top badge ticker
+  if (params.setTicker && articleStatus === 'published') {
     updatedTicker = {
       id: `ticker-${Date.now()}`,
       badge: (params.tickerBadge || newArticle.badge || 'LIVE').trim().toUpperCase(),
@@ -375,6 +310,29 @@ export async function clearTicker(): Promise<void> {
     db.ticker.updatedAt = new Date().toISOString();
     await saveNewsDatabase(db);
   }
+}
+
+/**
+ * Updates the editorial status of an article ('published', 'pending_review', 'draft')
+ */
+export async function updateArticleStatus(
+  id: string,
+  status: 'published' | 'pending_review' | 'draft'
+): Promise<NewsArticle | null> {
+  const db = await getNewsDatabase();
+  const article = db.articles.find(a => a.id === id);
+  if (!article) return null;
+
+  article.status = status;
+  await saveNewsDatabase(db);
+  return article;
+}
+
+/**
+ * Approves an article for public display (editorial release)
+ */
+export async function approveArticle(id: string): Promise<NewsArticle | null> {
+  return updateArticleStatus(id, 'published');
 }
 
 /**

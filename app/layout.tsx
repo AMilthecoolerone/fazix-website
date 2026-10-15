@@ -43,12 +43,33 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL,
   },
+  icons: {
+    icon: [
+      { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-48x48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/icon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/icon-192x192.png',
+  },
+  manifest: '/site.webmanifest',
   openGraph: {
     title: 'FAZIX | European Rocket League Esports',
     description: 'European Rocket League esports club competing in the RLCS. Based in NRW, founded in 2022.',
     url: SITE_URL,
     siteName: 'FAZIX Esports',
     images: [
+      {
+        url: '/images/logo.png',
+        width: 1024,
+        height: 1024,
+        alt: 'FAZIX Esports Official Logo',
+      },
       {
         url: '/images/hero_banner.jpg',
         width: 1200,
@@ -64,7 +85,7 @@ export const metadata: Metadata = {
     title: 'FAZIX | European Rocket League Esports',
     description: 'European Rocket League club competing in the RLCS. Based in NRW.',
     creator: '@FAZIX',
-    images: ['/images/hero_banner.jpg'],
+    images: ['/images/logo.png', '/images/hero_banner.jpg'],
   },
   robots: {
     index: true,
@@ -88,7 +109,8 @@ const jsonLd = {
   name: 'FAZIX Esports',
   alternateName: 'FAZIX',
   url: SITE_URL,
-  logo: `${SITE_URL}/images/hero_banner.jpg`,
+  logo: `${SITE_URL}/images/logo.png`,
+  image: `${SITE_URL}/images/logo.png`,
   sport: 'Esports',
   description: 'European Rocket League club competing in the RLCS. Based in NRW.',
   sameAs: [

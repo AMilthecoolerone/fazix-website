@@ -127,12 +127,20 @@ export async function forwardContactEmail(params: ContactEmailParams): Promise<{
         }),
       });
 
-      const data = await res.json();
-      if (data.success) {
+      const rawText = await res.text();
+      let data: any = null;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        data = null;
+      }
+      if (data && data.success) {
         console.log(`[FAZIX MAILER (Web3Forms)] Successfully forwarded contact inquiry to ${targetEmail}`);
         return { delivered: true, method: 'web3forms', target: targetEmail };
       }
-      console.error('[FAZIX MAILER (Web3Forms) ERROR]', data);
+      if (data) {
+        console.error('[FAZIX MAILER (Web3Forms) ERROR]', data);
+      }
     } catch (err) {
       console.error('[FAZIX MAILER (Web3Forms) FETCH ERROR]', err);
     }
@@ -222,6 +230,8 @@ export async function forwardApplicationEmail(params: ApplicationEmailParams): P
         body: JSON.stringify({
           access_key: process.env.WEB3FORMS_ACCESS_KEY,
           subject: emailSubject,
+          from_name: `${params.ign} (${params.discord})`,
+          email: targetEmail,
           role: params.role,
           ign: params.ign,
           discord: params.discord,
@@ -230,12 +240,32 @@ export async function forwardApplicationEmail(params: ApplicationEmailParams): P
           tracker: params.trackerUrl || 'N/A',
           experience: params.competitiveExp || 'N/A',
           notes: params.notes || 'N/A',
+          message: [
+            `Role: ${params.role.toUpperCase()}`,
+            `IGN: ${params.ign}`,
+            `Discord: ${params.discord}`,
+            `Age: ${params.age || 'N/A'}`,
+            `Country: ${params.country || 'N/A'}`,
+            `Tracker URL: ${params.trackerUrl || 'N/A'}`,
+            `Competitive Experience: ${params.competitiveExp || 'N/A'}`,
+            `Notes / Availability: ${params.notes || 'N/A'}`
+          ].join('\n'),
         }),
       });
 
-      const data = await res.json();
-      if (data.success) {
+      const rawText = await res.text();
+      let data: any = null;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        data = null;
+      }
+      if (data && data.success) {
+        console.log(`[FAZIX MAILER (Web3Forms Application)] Successfully forwarded application to ${targetEmail}`);
         return { delivered: true, method: 'web3forms', target: targetEmail };
+      }
+      if (data) {
+        console.error('[FAZIX MAILER (Web3Forms Application) ERROR]', data);
       }
     } catch (err) {
       console.error('[FAZIX MAILER (Web3Forms Application) ERROR]', err);

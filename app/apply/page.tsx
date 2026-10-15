@@ -72,9 +72,8 @@ export default function ApplyPage() {
           body: JSON.stringify({
             access_key: web3Key,
             subject: `[FAZIX Application] ${role.toUpperCase()} Trial: ${ign} (${discord})`,
-            from_name: fullName || ign,
+            from_name: fullName ? `${fullName} (${ign})` : ign,
             email: 'fazixesports@gmail.com',
-            replyto: discord,
             role,
             ign,
             full_name: fullName || 'N/A',

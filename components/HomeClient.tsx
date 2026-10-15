@@ -150,7 +150,7 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
   ];
 
   const [selectedTier, setSelectedTier] = useState<'all' | 'main' | 'academy' | 'community'>('all');
-  const [showRosterDetails, setShowRosterDetails] = useState(true);
+  const [showRosterDetails, setShowRosterDetails] = useState(false);
   const [articles, setArticles] = useState<Article[]>(
     initialArticles && initialArticles.length > 0 ? initialArticles : []
   );

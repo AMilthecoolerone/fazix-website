@@ -1,31 +1,13 @@
 {
   "ticker": {
-    "id": "ticker-1791727722626",
+    "id": "ticker-empty",
     "badge": "",
-    "text": "test",
+    "text": "",
     "link": "#news",
     "priority": "normal",
-    "isActive": true,
-    "updatedAt": "2026-10-11T14:08:42.626Z"
+    "isActive": false,
+    "updatedAt": "2026-10-14T19:04:00.000Z"
   },
-  "articles": [
-    {
-      "id": "news-bot-1791727706819",
-      "title": "TEST",
-      "date": "October 11, 2026",
-      "readTime": "1 min read",
-      "image": "/images/news/news_qualifier.jpg",
-      "summary": "test",
-      "content": [
-        "trest"
-      ],
-      "badge": "NEWS",
-      "author": "Discord News Bot",
-      "pinned": false,
-      "status": "published",
-      "source": "discord",
-      "createdAt": "2026-10-11T14:08:26.819Z"
-    }
-  ],
-  "lastUpdated": "2026-10-11T14:08:42.626Z"
+  "articles": [],
+  "lastUpdated": "2026-10-14T19:04:00.000Z"
 }
