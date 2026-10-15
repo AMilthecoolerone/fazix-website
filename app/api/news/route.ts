@@ -15,6 +15,7 @@ import {
   updateTicker,
   clearTicker,
   deleteArticle,
+  deleteAllArticles,
   approveArticle,
   updateArticleStatus,
 } from '@/lib/newsStore';
@@ -238,6 +239,20 @@ export async function POST(req: Request) {
       );
     }
 
+    // 5a. Action: Delete ALL articles
+    if (action === 'delete_all_articles' || action === 'clear_all_articles') {
+      const count = await deleteAllArticles();
+      console.log(`[NEWS API] Deleted all articles (${count} total) by IP:`, ip);
+      return NextResponse.json(
+        {
+          success: true,
+          message: `All articles (${count}) deleted successfully`,
+          deletedCount: count,
+        },
+        { headers: responseHeaders }
+      );
+    }
+
     // 5b. Action: Approve an article (editorial release)
     if (action === 'approve_article') {
       const { id } = body;
@@ -406,9 +421,22 @@ export async function DELETE(req: Request) {
       );
     }
 
+    const deleteAll = searchParams.get('all') === 'true';
+    if (deleteAll) {
+      const count = await deleteAllArticles();
+      return NextResponse.json(
+        {
+          success: true,
+          message: `All articles (${count}) deleted successfully`,
+          deletedCount: count,
+        },
+        { headers: responseHeaders }
+      );
+    }
+
     if (!id) {
       return NextResponse.json(
-        { success: false, error: 'Missing article id parameter' },
+        { success: false, error: 'Missing article id parameter or all=true' },
         { status: 400, headers: responseHeaders }
       );
     }

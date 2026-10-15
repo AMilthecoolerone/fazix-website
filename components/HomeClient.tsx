@@ -1272,7 +1272,7 @@ export function HomeClient({ initialArticles, initialTicker }: HomeClientProps) 
                     <div style={{ padding: '22px 22px 26px 22px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
                       {/* Icon */}
                       <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
-                        {tier.iconType === 'star' && <Star size={16} fill="#FFFFFF" color="#FFFFFF" />}
+                        {tier.iconType === 'star' && <Star size={16} color="#FFFFFF" strokeWidth={2.4} />}
                         {tier.iconType === 'user' && <User size={16} color="#FFFFFF" strokeWidth={2.4} />}
                         {tier.iconType === 'shield' && <Shield size={16} color="#FFFFFF" strokeWidth={2.4} />}
                       </div>

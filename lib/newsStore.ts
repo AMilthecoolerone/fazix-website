@@ -354,3 +354,20 @@ export async function deleteArticle(id: string): Promise<boolean> {
   }
   return removed;
 }
+
+/**
+ * Deletes all articles from the database
+ */
+export async function deleteAllArticles(): Promise<number> {
+  const db = await getNewsDatabase();
+  const count = db.articles.length;
+  db.articles = [];
+
+  // Clear article link from ticker if set
+  if (db.ticker && db.ticker.articleId) {
+    db.ticker.articleId = undefined;
+  }
+
+  await saveNewsDatabase(db);
+  return count;
+}
