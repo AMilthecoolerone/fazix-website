@@ -21,8 +21,7 @@ import {
   Flame,
   ArrowRight,
   Globe,
-  Check,
-  Video
+  Check
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -79,22 +78,20 @@ const getDropdownData = (lang: LanguageCode): Record<string, DropdownItem[]> => 
         href: '/creators'
       },
       {
-        title: 'r3ulex (Twitch)',
-        subtitle: t.nav.creatorsDropdown.r3ulexSubtitle,
-        icon: <Video size={18} color="#9146FF" />,
-        href: 'https://www.twitch.tv/r3ulex'
-      },
-      {
-        title: 'Kenorll (Twitch)',
-        subtitle: t.nav.creatorsDropdown.kenorllSubtitle,
-        icon: <Video size={18} color="#9146FF" />,
-        href: 'https://www.twitch.tv/kenorll'
-      },
-      {
         title: t.nav.creatorsDropdown.youtubeTitle,
         subtitle: t.nav.creatorsDropdown.youtubeSubtitle,
         icon: <Flame size={18} color="#FFFFFF" />,
         href: 'https://www.youtube.com/@Fazix-eSports'
+      },
+      {
+        title: t.nav.creatorsDropdown.tiktokTitle || 'Fazix TikTok',
+        subtitle: t.nav.creatorsDropdown.tiktokSubtitle || 'Short clips, highlights & mechanical plays',
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF">
+            <path d="M12.525.02c1.31 0 2.6.45 3.63 1.25.1.08.19.16.28.25.99.99 1.57 2.33 1.61 3.73v.15a6.57 6.57 0 0 0 3.96 1.41v3.42a9.98 9.98 0 0 1-3.95-.91v7.62c0 4.45-3.62 8.06-8.07 8.06-4.45 0-8.06-3.61-8.06-8.06 0-4.45 3.61-8.07 8.06-8.07.45 0 .9.04 1.34.12v3.6a4.57 4.57 0 0 0-1.34-.2 4.55 4.55 0 1 0 4.55 4.55V.02h3.29z" />
+          </svg>
+        ),
+        href: 'https://www.tiktok.com/@fazix_esports'
       },
       {
         title: t.nav.creatorsDropdown.applyTitle,
@@ -159,7 +156,7 @@ const getDropdownData = (lang: LanguageCode): Record<string, DropdownItem[]> => 
         title: t.nav.communityDropdown.tiktokTitle,
         subtitle: t.nav.communityDropdown.tiktokSubtitle,
         icon: <Zap size={18} color="#FFFFFF" />,
-        href: 'https://www.tiktok.com/@fazix.esports'
+        href: 'https://www.tiktok.com/@fazix_esports'
       }
     ],
     company: [
@@ -657,6 +654,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection, initi
             )}
           </div>
 
+          {/* Portal / Dashboard CTA */}
+          <Link
+            href="/login"
+            style={{
+              color: '#C5C5CD',
+              fontFamily: 'var(--font-helvetica)',
+              fontSize: '0.86rem',
+              fontWeight: 600,
+              textDecoration: 'none',
+              borderRadius: '6px',
+              padding: '8px 12px',
+              transition: 'all 0.15s ease',
+              whiteSpace: 'nowrap',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
+              e.currentTarget.style.color = '#FFFFFF';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = '#C5C5CD';
+            }}
+          >
+            Portal
+          </Link>
+
           {/* Apply Button CTA */}
           <Link
             href="/apply"
@@ -886,6 +912,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection, initi
               {t.nav.applyBtn}
             </Link>
             <Link
+              href="/login"
+              onClick={() => setMobileOpen(false)}
+              style={{
+                width: '100%',
+                padding: '13px',
+                fontSize: '0.92rem',
+                fontWeight: 700,
+                textAlign: 'center',
+                borderRadius: '6px',
+                textDecoration: 'none',
+                backgroundColor: '#FFFFFF',
+                color: '#000000',
+                border: 'none',
+              }}
+            >
+              Player & Staff Portal
+            </Link>
+            <Link
               href="/contact"
               onClick={() => setMobileOpen(false)}
               className="btn btn-outline"
@@ -935,7 +979,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection, initi
               <Flame size={20} />
             </a>
             <a
-              href="https://www.tiktok.com/@fazix.esports"
+              href="https://www.tiktok.com/@fazix_esports"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: '#A0A0A8', padding: '8px', minWidth: '40px', minHeight: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}

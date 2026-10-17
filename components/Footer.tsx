@@ -184,13 +184,12 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="/fazix-press-kit.zip"
-                  download="fazix-press-kit.zip"
-                  style={{ color: '#8E8E98', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  href="/login"
+                  style={{ color: '#8E8E98', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.2s', display: 'flex', alignItems: 'center', gap: '6px' }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#8E8E98')}
                 >
-                  {t.footer.linkPressKit}
+                  <span>Player & Staff Portal</span>
                 </a>
               </li>
             </ul>
@@ -329,7 +328,7 @@ export const Footer: React.FC = () => {
 
               {/* TikTok */}
               <a
-                href="https://www.tiktok.com/@fazix.esports?_r=1&_t=ZG-99lKYEBjosy"
+                href="https://www.tiktok.com/@fazix_esports"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="TikTok"

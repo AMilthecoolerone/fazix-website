@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "anti-slop-design": {
+      "source": "kjaylee/misskim-skills",
+      "sourceType": "github",
+      "skillPath": "skills/anti-slop-design/SKILL.md",
+      "computedHash": "f9c24be7f9c372118cd7a19fe9e4691c53169aff50fe924787a02e92affa2c74"
+    }
+  }
+}
