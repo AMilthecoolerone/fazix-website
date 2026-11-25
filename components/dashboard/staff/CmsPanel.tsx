@@ -164,7 +164,6 @@ export function CmsPanel({ canEdit, search }: { canEdit: boolean; search: string
     <div className="dx">
       <div className="dx-bar">
         <div>
-          <h2 className="dx-h">Content (CMS)</h2>
           <p className="dx-sub">News articles and the top banner on the website. Every save is kept as a version you can restore.</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>

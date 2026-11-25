@@ -640,8 +640,8 @@ h1, h2, h3, h4 {
 }
 .dx-btn:hover:not(:disabled) { background: #1A1A22; }
 .dx-btn:disabled { opacity: 0.45; cursor: default; }
-.dx-btn.primary { background: linear-gradient(180deg, #E4E4EC 0%, #A8A8B4 100%); color: #0E0E12; border-color: transparent; }
-.dx-btn.primary:hover:not(:disabled) { background: #fff; }
+.dx-btn.primary { background: #fff; color: #000; border-color: #fff; }
+.dx-btn.primary:hover:not(:disabled) { background: #D9D9DE; }
 .dx-btn.danger { color: #F87171; border-color: rgba(248,113,113,0.3); }
 .dx-btn.ghost { border-color: transparent; background: transparent; color: #9E9EA8; }
 .dx-btn.ghost:hover:not(:disabled) { color: #fff; background: #111116; }
@@ -684,3 +684,42 @@ h1, h2, h3, h4 {
 .dx-diff { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.76rem; line-height: 1.5; white-space: pre-wrap; background: #07070A; border-radius: 10px; padding: 10px 12px; max-height: 320px; overflow: auto; }
 .dx-diff .add { color: #4ADE80; display: block; }
 .dx-diff .del { color: #F87171; display: block; text-decoration: line-through; }
+
+/* ---------- Dashboard shell (db-*) ---------- */
+.db { display: flex; height: 100vh; background: #000; color: #fff; font-family: var(--font-helvetica); overflow: hidden; }
+.db-side { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; padding: 18px 12px; border-right: 1px solid rgba(255,255,255,0.06); box-sizing: border-box; }
+.db-brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; margin-bottom: 28px; color: #fff; text-decoration: none; font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; }
+.db-nav { display: flex; flex-direction: column; gap: 2px; }
+.db-link { display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border: none; border-radius: 8px; background: transparent; color: #8E8E9A; font: inherit; font-size: 0.86rem; font-weight: 500; cursor: pointer; text-align: left; transition: color .15s, background .15s; }
+.db-link:hover { color: #fff; background: rgba(255,255,255,0.04); }
+.db-link.is-active { color: #fff; background: rgba(255,255,255,0.07); }
+.db-user { margin-top: auto; position: relative; }
+.db-user-btn { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px; border: none; border-radius: 8px; background: transparent; color: #fff; font: inherit; cursor: pointer; text-align: left; }
+.db-user-btn:hover { background: rgba(255,255,255,0.04); }
+.db-user-btn img { border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.db-user-text { display: flex; flex-direction: column; min-width: 0; }
+.db-user-text strong { font-size: 0.84rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.db-user-text small { font-size: 0.72rem; color: #6E6E7C; }
+.db-menu { position: absolute; bottom: calc(100% + 6px); left: 0; right: 0; padding: 4px; background: #0B0B0F; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; }
+.db-menu button { display: flex; align-items: center; gap: 8px; width: 100%; height: 34px; padding: 0 10px; border: none; border-radius: 7px; background: transparent; color: #F87171; font: inherit; font-size: 0.82rem; cursor: pointer; }
+.db-menu button:hover { background: rgba(255,255,255,0.05); }
+.db-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.db-head { height: 60px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 28px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.db-head h1 { font-size: 1rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+.db-search { display: flex; align-items: center; gap: 8px; height: 34px; width: 240px; padding: 0 10px; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #6E6E7C; }
+.db-search:focus-within { border-color: rgba(255,255,255,0.2); }
+.db-search input { flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: #fff; font: inherit; font-size: 0.82rem; }
+.db-body { flex: 1; overflow-y: auto; padding: 24px 28px 40px; }
+@media (max-width: 760px) {
+  .db { flex-direction: column; height: auto; min-height: 100vh; overflow: visible; }
+  .db-side { width: 100%; flex-direction: row; align-items: center; gap: 8px; padding: 10px 12px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); overflow-x: auto; }
+  .db-brand { margin: 0 6px 0 0; }
+  .db-brand span, .db-user-text { display: none; }
+  .db-nav { flex-direction: row; }
+  .db-link { flex-shrink: 0; }
+  .db-user { margin: 0 0 0 auto; }
+  .db-menu { left: auto; right: 0; bottom: auto; top: calc(100% + 6px); width: 140px; z-index: 10; }
+  .db-head { padding: 0 16px; }
+  .db-search { width: 160px; }
+  .db-body { padding: 16px; overflow: visible; }
+}

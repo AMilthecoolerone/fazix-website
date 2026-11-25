@@ -62,7 +62,6 @@ export function JobsPanel({ canEdit, search }: { canEdit: boolean; search: strin
     <div className="dx">
       <div className="dx-bar">
         <div>
-          <h2 className="dx-h">Jobs & applications</h2>
           <p className="dx-sub">
             Post positions on <a href="/jobs" target="_blank" rel="noreferrer" style={{ color: '#fff' }}>/jobs</a> with your own questions, then review who applied.
           </p>

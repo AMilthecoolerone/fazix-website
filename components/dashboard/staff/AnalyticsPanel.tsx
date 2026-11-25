@@ -44,7 +44,6 @@ export function AnalyticsPanel({ colors }: { colors: Colors }) {
   return (
     <div className="dx">
       <div>
-        <h2 className="dx-h">Analytics</h2>
         <p className="dx-sub">Discord server growth and what&apos;s happening on the site.</p>
       </div>
       <div className="dx-stats">

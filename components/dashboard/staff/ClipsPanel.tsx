@@ -81,7 +81,6 @@ export function ClipsPanel({ staff, canWrite, canReview, search }: { staff: bool
   return (
     <div className="dx">
       <div>
-        <h2 className="dx-h">Clips</h2>
         <p className="dx-sub">
           {staff ? 'Members send in their best plays. Approve the good ones and feature the best for socials.' : 'Send us your best plays. Staff review every clip and the best ones get posted.'}
         </p>
