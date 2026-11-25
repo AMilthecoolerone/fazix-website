@@ -371,3 +371,18 @@ export async function deleteAllArticles(): Promise<number> {
   await saveNewsDatabase(db);
   return count;
 }
+
+/**
+ * Inserts or replaces an article as-is (used by the dashboard CMS).
+ */
+export async function upsertArticle(article: NewsArticle): Promise<NewsArticle> {
+  const db = await getNewsDatabase();
+  const index = db.articles.findIndex(a => a.id === article.id);
+  if (index === -1) {
+    db.articles = [article, ...db.articles];
+  } else {
+    db.articles[index] = article;
+  }
+  await saveNewsDatabase(db);
+  return article;
+}

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
+import { encodeSession } from '@/lib/session';
 import {
   DEMO_PROFILES,
-  serializeSession,
   SESSION_COOKIE_NAME,
   UserGroup
 } from '@/lib/auth';
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     param && DEMO_PROFILES[param] ? param : 'user';
 
   const profile = DEMO_PROFILES[targetGroup];
-  const serialized = serializeSession(profile);
+  const serialized = encodeSession(profile);
 
   const redirectUrl = new URL('/dashboard', request.url);
   const response = NextResponse.redirect(redirectUrl);

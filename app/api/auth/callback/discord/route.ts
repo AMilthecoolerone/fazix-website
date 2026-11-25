@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
+import { encodeSession } from '@/lib/session';
 import {
   getBaseUrl,
-  serializeSession,
   SESSION_COOKIE_NAME,
   UserSession,
   UserGroup,
@@ -161,7 +161,7 @@ export async function GET(request: Request) {
       mmr: assignedGroup === 'player' ? 2185 : undefined
     };
 
-    const serialized = serializeSession(session);
+    const serialized = encodeSession(session);
     const response = NextResponse.redirect(new URL('/dashboard', request.url));
 
     response.cookies.set({

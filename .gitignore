@@ -38,3 +38,9 @@ scripts/
 *.sln
 *.sw?
 
+
+# Dashboard data (jobs, applications, clips, CMS history) — never commit applicant data
+data/jobs.json
+data/job-applications.json
+data/clips.json
+data/cms-versions.json

@@ -2,7 +2,8 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { deserializeSession, SESSION_COOKIE_NAME } from '@/lib/auth';
+import { SESSION_COOKIE_NAME } from '@/lib/auth';
+import { decodeSession } from '@/lib/session';
 
 export const metadata: Metadata = {
   title: 'FAZIX Esports Portal | Player & Manager Dashboard',
@@ -21,7 +22,7 @@ export default async function DashboardLayout({
     redirect('/login');
   }
 
-  const session = deserializeSession(sessionCookie);
+  const session = decodeSession(sessionCookie);
   if (!session) {
     redirect('/login');
   }

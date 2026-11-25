@@ -33,9 +33,29 @@ import {
   Wifi,
   RefreshCw,
   TrendingUp,
-  Globe
+  Globe,
+  Clapperboard,
+  FileText,
+  BarChart3
 } from 'lucide-react';
 import { DiscordMemberStatsCard } from './DiscordMemberStatsCard';
+import { CmsPanel } from './staff/CmsPanel';
+import { JobsPanel } from './staff/JobsPanel';
+import { ClipsPanel } from './staff/ClipsPanel';
+import { AnalyticsPanel } from './staff/AnalyticsPanel';
+
+type DashboardTab = 'overview' | 'teams' | 'apply' | 'clips' | 'cms' | 'jobs' | 'analytics' | 'settings';
+
+const NAV_ITEMS: { id: DashboardTab; label: string; title: string; icon: React.ComponentType<{ size?: number; color?: string }>; staff?: boolean }[] = [
+  { id: 'overview', label: 'Dashboard', title: 'Dashboard', icon: LayoutDashboard },
+  { id: 'teams', label: 'Teams & Rosters', title: 'Teams & Player Rosters', icon: Trophy },
+  { id: 'apply', label: 'Tryouts', title: 'Tryout & Scouting Applications', icon: Users },
+  { id: 'clips', label: 'Clips', title: 'Clip Submissions', icon: Clapperboard },
+  { id: 'cms', label: 'Content', title: 'Content Management', icon: FileText, staff: true },
+  { id: 'jobs', label: 'Jobs', title: 'Jobs & Applications', icon: Briefcase, staff: true },
+  { id: 'analytics', label: 'Analytics', title: 'Analytics', icon: BarChart3, staff: true },
+  { id: 'settings', label: 'Settings', title: 'Settings', icon: Settings, staff: true },
+];
 
 export type UserGroup = 'support' | 'player' | 'partner' | 'user';
 
@@ -97,8 +117,15 @@ export function DashboardClient({ initialSession }: DashboardClientProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
+  // Staff = has a staff Discord role. Demo accounts can browse staff tools but not change anything.
+  const isStaff = (initialSession.eligibleGroups || [initialSession.role]).includes('support');
+  const canWrite = !initialSession.isDemo;
+
   // Active Navigation Tab
-  const [activeTab, setActiveTab] = useState<'overview' | 'teams' | 'apply' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
+  const navItems = NAV_ITEMS.filter((item) => !item.staff || isStaff);
+  const activeItem = NAV_ITEMS.find((item) => item.id === activeTab) || NAV_ITEMS[0];
+  const ActiveIcon = activeItem.icon;
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -311,188 +338,54 @@ export function DashboardClient({ initialSession }: DashboardClientProps) {
 
           {/* Grouped Navigation Links (NO COLOR ON LEFT ICONS - EXACT REFERENCE MATCH) */}
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {/* 1. Dashboard Tab */}
-            {(() => {
-              const isActive = activeTab === 'overview';
+            {navItems.map((item, index) => {
+              const isActive = activeTab === item.id;
+              const Icon = item.icon;
+              const showSection = item.staff && !navItems[index - 1]?.staff;
               return (
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('overview')}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
-                    gap: '12px',
-                    padding: isActive ? '8px 12px' : '9px 12px',
-                    borderRadius: '10px',
-                    border: isActive
-                      ? '1px solid rgba(255, 255, 255, 0.09)'
-                      : '1px solid transparent',
-                    background: isActive
-                      ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.04) 28%, rgba(255, 255, 255, 0.01) 48%, transparent 65%), linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.2) 100%), #0A0A0E'
-                      : 'transparent',
-                    boxShadow: isActive
-                      ? 'inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 10px rgba(0, 0, 0, 0.4)'
-                      : 'none',
-                    color: isActive ? '#FFFFFF' : '#9E9EA8',
-                    fontSize: '0.86rem',
-                    fontWeight: isActive ? 700 : 500,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = colors.itemHoverBg;
-                      e.currentTarget.style.color = '#FFFFFF';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = '#9E9EA8';
-                    }
-                  }}
-                >
-                  {/* Squircle box for active item icon, subtle silver gradient with dark icon */}
-                  {isActive ? (
-                    <div
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '6px',
-                        background: 'linear-gradient(180deg, #D8D8E2 0%, #A2A2AD 100%)',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                      }}
-                    >
-                      <LayoutDashboard size={13} color="#0E0E12" />
-                    </div>
-                  ) : (
-                    <div style={{ width: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <LayoutDashboard size={17} color="#8E8E98" />
+                <React.Fragment key={item.id}>
+                  {showSection && !sidebarCollapsed && (
+                    <div style={{ fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: colors.textMuted, padding: '14px 12px 6px' }}>
+                      Staff
                     </div>
                   )}
-                  {!sidebarCollapsed && <span>Dashboard</span>}
-                </button>
-              );
-            })()}
-
-            {/* 2. Teams & Rosters Tab */}
-            {(() => {
-              const isActive = activeTab === 'teams';
-              return (
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('teams')}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
-                    gap: '12px',
-                    padding: isActive ? '8px 12px' : '9px 12px',
-                    borderRadius: '10px',
-                    border: isActive
-                      ? '1px solid rgba(255, 255, 255, 0.09)'
-                      : '1px solid transparent',
-                    background: isActive
-                      ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.04) 28%, rgba(255, 255, 255, 0.01) 48%, transparent 65%), linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.2) 100%), #0A0A0E'
-                      : 'transparent',
-                    boxShadow: isActive
-                      ? 'inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 10px rgba(0, 0, 0, 0.4)'
-                      : 'none',
-                    color: isActive ? '#FFFFFF' : '#9E9EA8',
-                    fontSize: '0.86rem',
-                    fontWeight: isActive ? 700 : 500,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = colors.itemHoverBg;
-                      e.currentTarget.style.color = '#FFFFFF';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = '#9E9EA8';
-                    }
-                  }}
-                >
-                  {isActive ? (
-                    <div
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '6px',
-                        background: 'linear-gradient(180deg, #D8D8E2 0%, #A2A2AD 100%)',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                      }}
-                    >
-                      <Trophy size={13} color="#0E0E12" />
-                    </div>
-                  ) : (
-                    <div style={{ width: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Trophy size={17} color="#8E8E98" />
-                    </div>
-                  )}
-                  {!sidebarCollapsed && <span>Teams & Rosters</span>}
-                </button>
-              );
-            })()}
-
-            {/* 3. Applications Tab (with green Live pill like reference) */}
-            {(() => {
-              const isActive = activeTab === 'apply';
-              return (
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('apply')}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: sidebarCollapsed ? 'center' : 'space-between',
-                    padding: isActive ? '8px 12px' : '9px 12px',
-                    borderRadius: '10px',
-                    border: isActive
-                      ? '1px solid rgba(255, 255, 255, 0.09)'
-                      : '1px solid transparent',
-                    background: isActive
-                      ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.04) 28%, rgba(255, 255, 255, 0.01) 48%, transparent 65%), linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.2) 100%), #0A0A0E'
-                      : 'transparent',
-                    boxShadow: isActive
-                      ? 'inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 10px rgba(0, 0, 0, 0.4)'
-                      : 'none',
-                    color: isActive ? '#FFFFFF' : '#9E9EA8',
-                    fontSize: '0.86rem',
-                    fontWeight: isActive ? 700 : 500,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = colors.itemHoverBg;
-                      e.currentTarget.style.color = '#FFFFFF';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = '#9E9EA8';
-                    }
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  {showSection && sidebarCollapsed && <div style={{ height: '1px', background: colors.sidebarBorder, margin: '10px 8px' }} />}
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab(item.id)}
+                    title={sidebarCollapsed ? item.label : undefined}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
+                      gap: '12px',
+                      padding: isActive ? '8px 12px' : '9px 12px',
+                      borderRadius: '10px',
+                      border: isActive ? '1px solid rgba(255, 255, 255, 0.09)' : '1px solid transparent',
+                      background: isActive
+                        ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.04) 28%, rgba(255, 255, 255, 0.01) 48%, transparent 65%), linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.2) 100%), #0A0A0E'
+                        : 'transparent',
+                      boxShadow: isActive ? 'inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 10px rgba(0, 0, 0, 0.4)' : 'none',
+                      color: isActive ? '#FFFFFF' : '#9E9EA8',
+                      fontSize: '0.86rem',
+                      fontWeight: isActive ? 700 : 500,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = colors.itemHoverBg;
+                        e.currentTarget.style.color = '#FFFFFF';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = '#9E9EA8';
+                      }
+                    }}
+                  >
                     {isActive ? (
                       <div
                         style={{
@@ -507,105 +400,18 @@ export function DashboardClient({ initialSession }: DashboardClientProps) {
                           flexShrink: 0,
                         }}
                       >
-                        <Briefcase size={13} color="#0E0E12" />
+                        <Icon size={13} color="#0E0E12" />
                       </div>
                     ) : (
                       <div style={{ width: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <Briefcase size={17} color="#8E8E98" />
+                        <Icon size={17} color="#8E8E98" />
                       </div>
                     )}
-                    {!sidebarCollapsed && <span>Applications</span>}
-                  </div>
-
-                  {/* Green Live pill like reference in user screenshot */}
-                  {!sidebarCollapsed && (
-                    <span
-                      style={{
-                        fontSize: '0.66rem',
-                        fontWeight: 700,
-                        color: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.14)',
-                        border: '1px solid rgba(16, 185, 129, 0.3)',
-                        padding: '2px 7px',
-                        borderRadius: '9999px',
-                        letterSpacing: '0.02em',
-                      }}
-                    >
-                      Live
-                    </span>
-                  )}
-                </button>
+                    {!sidebarCollapsed && <span>{item.label}</span>}
+                  </button>
+                </React.Fragment>
               );
-            })()}
-
-            {/* 4. Settings Tab */}
-            {(() => {
-              const isActive = activeTab === 'settings';
-              return (
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('settings')}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
-                    gap: '12px',
-                    padding: isActive ? '8px 12px' : '9px 12px',
-                    borderRadius: '10px',
-                    border: isActive
-                      ? '1px solid rgba(255, 255, 255, 0.09)'
-                      : '1px solid transparent',
-                    background: isActive
-                      ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.04) 28%, rgba(255, 255, 255, 0.01) 48%, transparent 65%), linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.2) 100%), #0A0A0E'
-                      : 'transparent',
-                    boxShadow: isActive
-                      ? 'inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 10px rgba(0, 0, 0, 0.4)'
-                      : 'none',
-                    color: isActive ? '#FFFFFF' : '#9E9EA8',
-                    fontSize: '0.86rem',
-                    fontWeight: isActive ? 700 : 500,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = colors.itemHoverBg;
-                      e.currentTarget.style.color = '#FFFFFF';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = '#9E9EA8';
-                    }
-                  }}
-                >
-                  {isActive ? (
-                    <div
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '6px',
-                        background: 'linear-gradient(180deg, #D8D8E2 0%, #A2A2AD 100%)',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                      }}
-                    >
-                      <Settings size={13} color="#0E0E12" />
-                    </div>
-                  ) : (
-                    <div style={{ width: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Settings size={17} color="#8E8E98" />
-                    </div>
-                  )}
-                  {!sidebarCollapsed && <span>Settings</span>}
-                </button>
-              );
-            })()}
+            })}
           </nav>
         </div>
 
@@ -837,10 +643,7 @@ export function DashboardClient({ initialSession }: DashboardClientProps) {
                   flexShrink: 0,
                 }}
               >
-                {activeTab === 'overview' && <LayoutDashboard size={14} color="#0E0E12" />}
-                {activeTab === 'teams' && <Trophy size={14} color="#0E0E12" />}
-                {activeTab === 'apply' && <Users size={14} color="#0E0E12" />}
-                {activeTab === 'settings' && <Settings size={14} color="#0E0E12" />}
+                <ActiveIcon size={14} color="#0E0E12" />
               </div>
               <span
                 style={{
@@ -850,13 +653,7 @@ export function DashboardClient({ initialSession }: DashboardClientProps) {
                   letterSpacing: '-0.01em',
                 }}
               >
-                {activeTab === 'overview'
-                  ? 'Dashboard'
-                  : activeTab === 'teams'
-                  ? 'Teams & Player Rosters'
-                  : activeTab === 'apply'
-                  ? 'Tryout & Scouting Applications'
-                  : 'Settings'}
+                {activeItem.title}
               </span>
             </div>
 
@@ -2075,6 +1872,11 @@ export function DashboardClient({ initialSession }: DashboardClientProps) {
           {/* ============================================================== */}
           {/* TAB: SETTINGS                                                  */}
           {/* ============================================================== */}
+          {activeTab === 'clips' && <ClipsPanel staff={isStaff} canWrite={canWrite} canReview={isStaff && canWrite} search={searchQuery} />}
+          {isStaff && activeTab === 'cms' && <CmsPanel canEdit={canWrite} search={searchQuery} />}
+          {isStaff && activeTab === 'jobs' && <JobsPanel canEdit={canWrite} search={searchQuery} />}
+          {isStaff && activeTab === 'analytics' && <AnalyticsPanel colors={colors} />}
+
           {activeTab === 'settings' && (
             <div
               style={{

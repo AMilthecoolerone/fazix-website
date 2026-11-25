@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { deserializeSession, SESSION_COOKIE_NAME } from '@/lib/auth';
+import { SESSION_COOKIE_NAME } from '@/lib/auth';
+import { decodeSession } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +13,7 @@ export async function GET() {
     return NextResponse.json({ authenticated: false, user: null });
   }
 
-  const session = deserializeSession(sessionCookie);
+  const session = decodeSession(sessionCookie);
   if (!session) {
     return NextResponse.json({ authenticated: false, user: null });
   }
