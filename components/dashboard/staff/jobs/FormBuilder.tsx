@@ -5,6 +5,7 @@ import { ArrowDown, ArrowUp, Copy, GitBranch, GripVertical, Plus, Trash2, Chevro
 import {
   CONDITION_SOURCES,
   HAS_OPTIONS,
+  QUESTION_PRESETS,
   QUESTION_TYPES,
   TYPE_LABEL,
   conditionOptions,
@@ -32,7 +33,10 @@ function newQuestion(type: QuestionType): Question {
 
 export function FormBuilder({ sections, onChange }: Props) {
   const [open, setOpen] = useState<string | null>(null);
-  const [adding, setAdding] = useState<string | null>(null); // section id with the type menu open
+  const [adding, setAdding] = useState<string | null>(null); // section id with the add menu open
+  const [addTab, setAddTab] = useState<'presets' | 'types'>('presets');
+  const presetGroups = Array.from(new Set(QUESTION_PRESETS.map((p) => p.group)));
+  const existingLabels = new Set(sections.flatMap((x) => x.questions.map((qq) => qq.label.trim().toLowerCase())));
   const [drag, setDrag] = useState<{ section: string; index: number } | null>(null);
   const [over, setOver] = useState<string | null>(null);
 
@@ -321,24 +325,69 @@ export function FormBuilder({ sections, onChange }: Props) {
           </ol>
 
           {adding === s.id ? (
-            <div className="fb-types" role="menu" aria-label="Choose a question type">
-              {QUESTION_TYPES.map((t) => (
-                <button
-                  key={t.type}
-                  type="button"
-                  role="menuitem"
-                  onClick={() => {
-                    const q = newQuestion(t.type);
-                    setSection(s.id, { questions: [...s.questions, q] });
-                    setAdding(null);
-                    setOpen(q.id);
-                  }}
-                >
-                  <strong>{t.label}</strong>
-                  <span>{t.hint}</span>
-                </button>
-              ))}
-              <button type="button" className="fb-types-cancel" onClick={() => setAdding(null)}>Cancel</button>
+            <div className="fb-add-menu">
+              <div className="fb-add-head">
+                <div className="dx-tabs" role="tablist">
+                  <button type="button" role="tab" aria-selected={addTab === 'presets'} className={`dx-tab ${addTab === 'presets' ? 'is-active' : ''}`} onClick={() => setAddTab('presets')}>
+                    Ready-made questions
+                  </button>
+                  <button type="button" role="tab" aria-selected={addTab === 'types'} className={`dx-tab ${addTab === 'types' ? 'is-active' : ''}`} onClick={() => setAddTab('types')}>
+                    Write your own
+                  </button>
+                </div>
+                <button type="button" className="dx-btn ghost" onClick={() => setAdding(null)}>Cancel</button>
+              </div>
+              {addTab === 'presets' ? (
+                <div className="fb-presets">
+                  {presetGroups.map((g) => (
+                    <div key={g} className="fb-preset-group">
+                      <h5>{g}</h5>
+                      <div className="fb-preset-list">
+                        {QUESTION_PRESETS.filter((p) => p.group === g).map((p) => {
+                          const sample = p.make();
+                          const added = sample.every((qq) => existingLabels.has(qq.label.trim().toLowerCase()));
+                          return (
+                            <button
+                              key={p.id}
+                              type="button"
+                              className={added ? 'is-added' : ''}
+                              title={sample.map((qq) => qq.label).join(' / ')}
+                              onClick={() => {
+                                const made = p.make();
+                                setSection(s.id, { questions: [...s.questions, ...made] });
+                                setAdding(null);
+                              }}
+                            >
+                              {p.label}
+                              {sample.length > 1 && <small>+{sample.length - 1}</small>}
+                              {added && <small>added</small>}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="fb-types" role="menu" aria-label="Choose an answer type">
+                  {QUESTION_TYPES.map((t) => (
+                    <button
+                      key={t.type}
+                      type="button"
+                      role="menuitem"
+                      onClick={() => {
+                        const q = newQuestion(t.type);
+                        setSection(s.id, { questions: [...s.questions, q] });
+                        setAdding(null);
+                        setOpen(q.id);
+                      }}
+                    >
+                      <strong>{t.label}</strong>
+                      <span>{t.hint}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           ) : (
             <button type="button" className="dx-btn fb-add" onClick={() => setAdding(s.id)}>

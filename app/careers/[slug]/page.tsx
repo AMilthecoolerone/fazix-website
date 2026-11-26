@@ -37,45 +37,57 @@ export default async function JobPage({ params }: Props) {
   const staffPreview = job?.status === 'draft' && isStaff(await getSession());
   if (!job || (job.status === 'draft' && !staffPreview)) notFound();
   const open = isJobAcceptingApplications(job);
+  const facts = [
+    ['Department', job.department],
+    ['Type', job.employmentType],
+    ['Location', job.location],
+    ['Time', job.commitment],
+    ['Apply by', job.closesAt && open ? new Date(job.closesAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : ''],
+  ].filter(([, v]) => v);
 
   return (
     <div className="cr-page">
       <Navbar />
-      <main className="container cr-wrap cr-job">
-        <Link href="/careers" className="cr-back">
+      <main className="container cr-jobpage">
+        <Link href="/careers#roles" className="cr-back">
           <ArrowLeft size={16} /> All roles
         </Link>
         {staffPreview && <p className="cr-note">Draft preview. Only staff can see this page until the role is opened.</p>}
 
-        <header className="cr-job-head">
-          <p className="cr-job-dept">{job.department}</p>
-          <h1>{job.title}</h1>
-          <dl className="cr-facts">
-            <div><dt>Type</dt><dd>{job.employmentType}</dd></div>
-            <div><dt>Location</dt><dd>{job.location}</dd></div>
-            {job.commitment && <div><dt>Time</dt><dd>{job.commitment}</dd></div>}
-            {job.closesAt && open && (
-              <div><dt>Apply by</dt><dd>{new Date(job.closesAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}</dd></div>
+        <h1 className="cr-display cr-job-title">{job.title}</h1>
+        {job.summary && <p className="cr-lead">{job.summary}</p>}
+
+        <div className="cr-job-layout">
+          <article className="cr-job-body">
+            {job.about && <section className="cr-block cr-about">{job.about}</section>}
+            <Block title="What you'll do" items={job.responsibilities} />
+            <Block title="What we're looking for" items={job.requirements} />
+            <Block title="Nice to have" items={job.niceToHave} />
+            <Block title="What you get" items={job.perks} />
+            {!job.about && !job.responsibilities.length && !job.requirements.length && (
+              <p className="cr-lead">Apply and tell us about yourself. We&apos;ll share the details on Discord.</p>
             )}
-          </dl>
-          {open ? (
-            <Link href={`/careers/${job.slug}/apply`} className="cr-apply">Apply for this role</Link>
-          ) : (
-            <p className="cr-closed">This role is no longer taking applications.</p>
-          )}
-        </header>
+          </article>
 
-        {job.about && <section className="cr-block cr-about">{job.about}</section>}
-        <Block title="What you'll do" items={job.responsibilities} />
-        <Block title="What we're looking for" items={job.requirements} />
-        <Block title="Nice to have" items={job.niceToHave} />
-        <Block title="What you get" items={job.perks} />
-
-        {open && (
-          <div className="cr-bottom">
-            <Link href={`/careers/${job.slug}/apply`} className="cr-apply">Apply for this role</Link>
-          </div>
-        )}
+          <aside className="cr-side">
+            <dl>
+              {facts.map(([k, v]) => (
+                <div key={k}>
+                  <dt>{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))}
+            </dl>
+            {open ? (
+              <Link href={`/careers/${job.slug}/apply`} className="cr-btn is-primary cr-side-apply">
+                Apply for this role
+              </Link>
+            ) : (
+              <p className="cr-closed">This role is no longer taking applications.</p>
+            )}
+            {open && job.requireDiscord && <p className="cr-side-note">You&apos;ll log in with Discord to apply.</p>}
+          </aside>
+        </div>
       </main>
       <Footer />
     </div>

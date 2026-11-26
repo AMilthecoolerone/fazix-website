@@ -53,7 +53,8 @@ export function DashboardClient({ initialSession }: { initialSession: UserSessio
   }
 
   return (
-    <div className="db">
+    // data-lenis-prevent: the site-wide smooth scroller must not swallow wheel events in the dashboard.
+    <div className="db" data-lenis-prevent>
       <aside className="db-side">
         <Link href="/" className="db-brand">
           <img src="/images/logo.png" alt="" width={26} height={26} />

@@ -27,12 +27,11 @@ export default async function ApplyPage({ params }: Props) {
   return (
     <div className="cr-page">
       <Navbar />
-      <main className="container cr-wrap cr-applywrap">
+      <main className="container cr-applywrap">
         <Link href={`/careers/${job.slug}`} className="cr-back">
           <ArrowLeft size={16} /> {job.title}
         </Link>
-        <p className="cr-job-dept">Apply</p>
-        <h1 className="cr-apply-title">{job.title}</h1>
+        <h1 className="cr-display cr-apply-title">{job.title}</h1>
         {already ? (
           <div className="af-done">
             <h2>You&apos;ve already applied</h2>
