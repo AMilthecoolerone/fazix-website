@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Eye, ExternalLink, Save, Trash2, X } from 'lucide-react';
-import { slugify, type Job, type JobStatus } from '@/lib/careerForm';
+import { PRESET_COMMITMENTS, PRESET_DEPARTMENTS, PRESET_LOCATIONS, PRESET_TYPES, slugify, type Job, type JobStatus } from '@/lib/careerForm';
 import { ApplicationForm } from '@/components/careers/ApplicationForm';
 import { FormBuilder } from './FormBuilder';
 import { api } from '../api';
@@ -19,6 +19,24 @@ const STATUS_HELP: Record<JobStatus, string> = {
   open: 'Listed on /careers and accepting applications.',
   closed: 'Page stays up but nobody can apply.',
 };
+
+function PresetField({ label, value, onChange, presets, placeholder }: { label: string; value: string; onChange: (v: string) => void; presets: string[]; placeholder?: string }) {
+  return (
+    <div className="dx-field">
+      <label>
+        {label}
+        <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} maxLength={80} style={{ marginTop: 6 }} />
+      </label>
+      <div className="jb-presets" aria-label={`${label} presets`}>
+        {presets.map((p) => (
+          <button key={p} type="button" className={value === p ? 'is-on' : ''} aria-pressed={value === p} onClick={() => onChange(p)}>
+            {p}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function ListField({ label, value, onChange, placeholder }: { label: string; value: string[]; onChange: (v: string[]) => void; placeholder: string }) {
   const [text, setText] = useState(value.join('\n'));
@@ -130,32 +148,10 @@ export function JobEditor({
       {tab === 'posting' && (
         <div className="jb-grid">
           <div className="dx-grid2">
-            <label className="dx-field">
-              Department
-              <input list="jb-departments" value={draft.department} onChange={(e) => set({ department: e.target.value })} maxLength={60} />
-              <datalist id="jb-departments">
-                {['Staff', 'Content', 'Esports', 'Management', 'Design', 'Development', 'Marketing'].map((d) => (
-                  <option key={d} value={d} />
-                ))}
-              </datalist>
-            </label>
-            <label className="dx-field">
-              Type
-              <input list="jb-types" value={draft.employmentType} onChange={(e) => set({ employmentType: e.target.value })} maxLength={60} />
-              <datalist id="jb-types">
-                {['Volunteer', 'Tryout', 'Part-time', 'Freelance', 'Internship'].map((d) => (
-                  <option key={d} value={d} />
-                ))}
-              </datalist>
-            </label>
-            <label className="dx-field">
-              Location
-              <input value={draft.location} onChange={(e) => set({ location: e.target.value })} maxLength={60} />
-            </label>
-            <label className="dx-field">
-              Time commitment
-              <input value={draft.commitment} onChange={(e) => set({ commitment: e.target.value })} placeholder="5–10 hours a week" maxLength={80} />
-            </label>
+            <PresetField label="Department" value={draft.department} onChange={(v) => set({ department: v })} presets={PRESET_DEPARTMENTS} />
+            <PresetField label="Type" value={draft.employmentType} onChange={(v) => set({ employmentType: v })} presets={PRESET_TYPES} />
+            <PresetField label="Location" value={draft.location} onChange={(v) => set({ location: v })} presets={PRESET_LOCATIONS} />
+            <PresetField label="Time commitment" value={draft.commitment} onChange={(v) => set({ commitment: v })} presets={PRESET_COMMITMENTS} placeholder="5–10 hours a week" />
           </div>
           <label className="dx-field">
             Summary <span className="jb-hint">Shown in the list on /careers</span>
@@ -231,8 +227,7 @@ export function JobEditor({
               </button>
             </div>
             <div className="jb-preview-body cr-page">
-              <p className="cr-job-dept">Apply</p>
-              <h1 className="cr-apply-title">{draft.title || 'Untitled job'}</h1>
+              <h1 className="cr-display cr-apply-title">{draft.title || 'Untitled job'}</h1>
               <ApplicationForm
                 slug={draft.slug || 'preview'}
                 jobTitle={draft.title}

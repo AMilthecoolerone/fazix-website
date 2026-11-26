@@ -386,3 +386,61 @@ export const JOB_TEMPLATES: JobTemplate[] = [
 export function blankSections(): FormSection[] {
   return build([{ title: 'About you', questions: [{ type: 'long_text', label: 'Why do you want to join FAZIX?' }] }, AGREEMENT]);
 }
+
+// ---------- Ready-made questions (presets) ----------
+
+export interface QuestionPreset {
+  id: string;
+  group: string;
+  label: string;
+  /** Returns one or more questions; follow-ups can depend on the first one. */
+  make: () => Question[];
+}
+
+const q = (type: QuestionType, label: string, extra: Partial<Question> = {}): Question => ({ id: uid('q'), type, label, required: true, showIf: null, ...extra });
+
+const followUp = (question: string, followLabel: string): Question[] => {
+  const first = q('yes_no', question);
+  return [first, q('long_text', followLabel, { showIf: { questionId: first.id, equals: 'Yes' } })];
+};
+
+export const PRESET_DEPARTMENTS = ['Staff', 'Esports', 'Content', 'Management', 'Development', 'Design', 'Marketing', 'Events'];
+export const PRESET_TYPES = ['Volunteer', 'Tryout', 'Part-time', 'Freelance', 'Internship'];
+export const PRESET_LOCATIONS = ['Remote', 'Remote (EU)', 'Remote (DACH)', 'NRW, Germany'];
+export const PRESET_COMMITMENTS = ['1–3 hours a week', '3–6 hours a week', '5–10 hours a week', '10+ hours a week', 'Evenings (CET)', 'Weekends'];
+
+export const QUESTION_PRESETS: QuestionPreset[] = [
+  { id: 'age', group: 'About them', label: 'Age', make: () => [q('number', 'How old are you?', { min: 13, max: 99 })] },
+  { id: 'country', group: 'About them', label: 'Country', make: () => [q('dropdown', 'Where are you based?', { options: ['Germany', 'Austria', 'Switzerland', 'Netherlands', 'France', 'Rest of EU', 'UK', 'North America', 'Other'] })] },
+  { id: 'timezone', group: 'About them', label: 'Timezone', make: () => [q('dropdown', 'Which timezone are you in?', { options: ['CET / CEST', 'GMT / BST', 'EET / EEST', 'EST / EDT', 'PST / PDT', 'Other'] })] },
+  { id: 'languages', group: 'About them', label: 'Languages', make: () => [q('multi_choice', 'Which languages do you speak?', { options: ['German', 'English', 'French', 'Spanish', 'Dutch', 'Other'] })] },
+  { id: 'hours', group: 'Availability', label: 'Hours per week', make: () => [q('number', 'How many hours a week can you give?', { min: 1, max: 60 })] },
+  { id: 'days', group: 'Availability', label: 'Days available', make: () => [q('multi_choice', 'Which days are you usually available?', { options: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] })] },
+  { id: 'times', group: 'Availability', label: 'Time of day', make: () => [q('multi_choice', 'What time of day suits you best?', { options: ['Morning', 'Afternoon', 'Evening', 'Late night'] })] },
+  { id: 'start', group: 'Availability', label: 'Start date', make: () => [q('date', 'When could you start?')] },
+  { id: 'ign', group: 'Rocket League', label: 'In-game name', make: () => [q('short_text', 'In-game name', { maxLength: 40 })] },
+  { id: 'tracker', group: 'Rocket League', label: 'RL Tracker link', make: () => [q('url', 'RL Tracker link', { placeholder: 'https://rocketleague.tracker.network/…' })] },
+  { id: 'rank', group: 'Rocket League', label: 'Highest rank', make: () => [q('dropdown', 'Highest rank (3v3)', { options: ['Diamond', 'Champion 1', 'Champion 2', 'Champion 3', 'Grand Champion 1', 'Grand Champion 2', 'Grand Champion 3', 'Supersonic Legend'] })] },
+  { id: 'platform', group: 'Rocket League', label: 'Platform', make: () => [q('single_choice', 'Which platform do you play on?', { options: ['PC', 'PlayStation', 'Xbox', 'Switch'] })] },
+  { id: 'rlrole', group: 'Rocket League', label: 'Preferred role', make: () => [q('single_choice', 'Preferred role', { options: ['First man / striker', 'Second man / playmaker', 'Third man / anchor', 'Flexible'] })] },
+  { id: 'teams', group: 'Rocket League', label: 'Previous teams', make: () => [q('long_text', 'Teams and tournaments you have played', { required: false, maxLength: 1500 })] },
+  { id: 'why', group: 'Experience', label: 'Why FAZIX?', make: () => [q('long_text', 'Why do you want to join FAZIX?', { maxLength: 1500 })] },
+  { id: 'experience', group: 'Experience', label: 'Previous experience + follow-up', make: () => followUp('Have you done this role before?', 'Where, for how long, and what did you do?') },
+  { id: 'portfolio', group: 'Experience', label: 'Portfolio link', make: () => [q('url', 'Link to your portfolio or best work')] },
+  { id: 'strengths', group: 'Experience', label: 'Strengths', make: () => [q('long_text', 'What are you especially good at?', { maxLength: 1000 })] },
+  { id: 'mic', group: 'Experience', label: 'Microphone', make: () => [q('yes_no', 'Do you have a working microphone for voice calls?')] },
+  { id: 'twitter', group: 'Socials', label: 'X / Twitter', make: () => [q('url', 'X / Twitter profile', { required: false, placeholder: 'https://x.com/…' })] },
+  { id: 'stream', group: 'Socials', label: 'Twitch / YouTube', make: () => [q('url', 'Twitch or YouTube channel', { required: false })] },
+  { id: 'tiktok', group: 'Socials', label: 'TikTok', make: () => [q('url', 'TikTok profile', { required: false, placeholder: 'https://tiktok.com/@…' })] },
+  { id: 'anything', group: 'Wrap up', label: 'Anything else', make: () => [q('long_text', 'Anything else you want us to know?', { required: false, maxLength: 1000 })] },
+  { id: 'consent', group: 'Wrap up', label: 'Data agreement', make: () => [q('consent', 'I confirm my answers are true and I agree to FAZIX storing them to review my application.')] },
+  {
+    id: 'parent',
+    group: 'Wrap up',
+    label: 'Parent consent (under 16)',
+    make: () => {
+      const u16 = q('yes_no', 'Are you under 16?');
+      return [u16, q('consent', 'A parent or guardian knows about and agrees to this application.', { showIf: { questionId: u16.id, equals: 'Yes' } })];
+    },
+  },
+];
