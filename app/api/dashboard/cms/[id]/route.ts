@@ -4,7 +4,7 @@ import { saveArticle, removeArticle, parseArticleBody } from '@/lib/cms';
 export const dynamic = 'force-dynamic';
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await requireStaff({ write: true });
+  const session = await requireStaff();
   if (session instanceof Response) return session;
   const { id } = await params;
   const input = parseArticleBody(await req.json().catch(() => ({})));
@@ -17,7 +17,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 }
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await requireStaff({ write: true });
+  const session = await requireStaff();
   if (session instanceof Response) return session;
   const { id } = await params;
   return (await removeArticle(id)) ? Response.json({ ok: true }) : jsonError(404, 'Article not found.');

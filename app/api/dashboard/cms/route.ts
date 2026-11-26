@@ -10,7 +10,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const session = await requireStaff({ write: true });
+  const session = await requireStaff();
   if (session instanceof Response) return session;
   const input = parseArticleBody(await req.json().catch(() => ({})));
   if (!input.title) return jsonError(400, 'Title is required.');

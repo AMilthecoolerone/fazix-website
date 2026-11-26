@@ -12,7 +12,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
 /** Restore: body { versionId } */
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await requireStaff({ write: true });
+  const session = await requireStaff();
   if (session instanceof Response) return session;
   const { id } = await params;
   const body = await req.json().catch(() => ({}));

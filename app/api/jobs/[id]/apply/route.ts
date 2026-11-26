@@ -34,8 +34,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       name,
       discord,
       email: email || undefined,
-      discordId: session && !session.isDemo ? session.id : undefined,
-      avatarUrl: session && !session.isDemo ? session.avatarUrl : undefined,
+      discordId: session ? session.id : undefined,
+      avatarUrl: session ? session.avatarUrl : undefined,
     },
     answers: result.answers,
   });

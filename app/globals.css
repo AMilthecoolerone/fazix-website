@@ -723,3 +723,16 @@ h1, h2, h3, h4 {
   .db-search { width: 160px; }
   .db-body { padding: 16px; overflow: visible; }
 }
+
+/* ---------- Login ---------- */
+.login { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; padding: 24px 16px; background: #000; color: #fff; font-family: var(--font-helvetica); box-sizing: border-box; }
+.login-logo img { display: block; }
+.login-box { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 16px; text-align: center; }
+.login-box h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+.login-box p { color: #8E8E9A; font-size: 0.9rem; line-height: 1.5; margin: 0 0 8px; }
+.login-discord { display: flex; align-items: center; justify-content: center; gap: 10px; height: 46px; border-radius: 10px; background: #5865F2; color: #fff; font-weight: 700; font-size: 0.92rem; text-decoration: none; transition: background .15s; }
+.login-discord:hover { background: #4752C4; }
+.login-discord[aria-disabled="true"] { opacity: 0.7; pointer-events: none; }
+.login-error { padding: 10px 12px; border-radius: 10px; background: #200B0B; color: #FCA5A5; font-size: 0.84rem; line-height: 1.45; text-align: left; }
+.login-box small { color: #6E6E7C; font-size: 0.78rem; }
+.login-box small a { color: #A0A0AC; }

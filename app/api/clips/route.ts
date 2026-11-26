@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const session = await requireUser({ write: true });
+  const session = await requireUser();
   if (session instanceof Response) return session;
   const limit = checkRateLimit('clip-submit', session.id, { limit: 10, windowMs: 60 * 60 * 1000 });
   if (!limit.success) return rateLimitResponse(limit);

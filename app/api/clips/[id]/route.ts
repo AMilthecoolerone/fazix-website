@@ -4,7 +4,7 @@ import { reviewClip, deleteClip } from '@/lib/clips';
 export const dynamic = 'force-dynamic';
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await requireStaff({ write: true });
+  const session = await requireStaff();
   if (session instanceof Response) return session;
   const { id } = await params;
   const body = await req.json().catch(() => ({}));
@@ -14,7 +14,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
 /** Staff can delete any clip; members can delete their own. */
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await requireUser({ write: true });
+  const session = await requireUser();
   if (session instanceof Response) return session;
   const { id } = await params;
   const ok = await deleteClip(id, isStaff(session) ? undefined : session.id);

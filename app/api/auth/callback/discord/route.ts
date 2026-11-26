@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { encodeSession } from '@/lib/session';
+import { cookies } from 'next/headers';
 import {
   getBaseUrl,
   SESSION_COOKIE_NAME,
+  OAUTH_STATE_COOKIE,
   UserSession,
-  UserGroup,
-  USER_GROUPS,
   resolveUserGroups,
   DISCORD_GUILD_ID
 } from '@/lib/auth';
@@ -17,6 +17,11 @@ export async function GET(request: Request) {
   const code = searchParams.get('code');
   const error = searchParams.get('error');
   const state = searchParams.get('state');
+
+  const expectedState = (await cookies()).get(OAUTH_STATE_COOKIE)?.value;
+  if (!error && (!state || !expectedState || state !== expectedState)) {
+    return NextResponse.redirect(new URL('/login?error=state_mismatch', request.url));
+  }
 
   if (error || !code) {
     const errorMsg = error || 'Missing authorization code';
@@ -133,32 +138,15 @@ export async function GET(request: Request) {
     // 5. Determine Group based on Discord Roles
     const { primaryGroup, eligibleGroups } = resolveUserGroups(memberRoles);
 
-    // If state requested a specific valid group and user is authorized or support
-    let assignedGroup: UserGroup = primaryGroup;
-    if (state && ['support', 'player', 'partner', 'user'].includes(state)) {
-      if (eligibleGroups.includes(state as UserGroup) || primaryGroup === 'support') {
-        assignedGroup = state as UserGroup;
-      }
-    }
-
-    const displayName = memberNick || discordUser.global_name || discordUser.username;
-
     const session: UserSession = {
       id: discordUser.id,
       username: discordUser.username,
-      displayName,
-      avatar: discordUser.avatar || '',
+      displayName: memberNick || discordUser.global_name || discordUser.username,
       avatarUrl,
-      role: assignedGroup,
-      group: assignedGroup,
+      role: primaryGroup,
       eligibleGroups,
       discordRoles: memberRoles,
-      groupTitle: USER_GROUPS[assignedGroup]?.label || 'Normal people (Users)',
       email: discordUser.email || undefined,
-      teamName: assignedGroup === 'player' ? 'FAZIX Main RLCS Roster' : 'FAZIX Esports',
-      isDemo: false,
-      joinedAt: new Date().toISOString().split('T')[0],
-      mmr: assignedGroup === 'player' ? 2185 : undefined
     };
 
     const serialized = encodeSession(session);
@@ -174,6 +162,7 @@ export async function GET(request: Request) {
       maxAge: 60 * 60 * 24 * 30 // 30 days
     });
 
+    response.cookies.set({ name: OAUTH_STATE_COOKIE, value: '', path: '/api/auth/callback', maxAge: 0 });
     return response;
   } catch (err: any) {
     console.error('Discord Auth Callback Exception:', err);

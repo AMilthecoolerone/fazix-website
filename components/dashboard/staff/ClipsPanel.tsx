@@ -8,7 +8,7 @@ import { api, timeAgo } from './api';
 
 const PILL: Record<ClipStatus, string> = { pending: 'amber', approved: 'green', featured: 'violet', rejected: 'red' };
 
-export function ClipsPanel({ staff, canWrite, canReview, search }: { staff: boolean; canWrite: boolean; canReview: boolean; search: string }) {
+export function ClipsPanel({ staff, search }: { staff: boolean; search: string }) {
   const [clips, setClips] = useState<Clip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -89,7 +89,6 @@ export function ClipsPanel({ staff, canWrite, canReview, search }: { staff: bool
 
       <form className="dx-card" onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <h3 className="dx-h" style={{ fontSize: '0.9rem' }}>Submit a clip</h3>
-        {!canWrite && <div className="dx-note">Demo accounts can&apos;t submit clips. Log in with Discord to send one.</div>}
         <div className="dx-grid2">
           <label className="dx-field">
             Title
@@ -116,7 +115,7 @@ export function ClipsPanel({ staff, canWrite, canReview, search }: { staff: bool
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', justifyContent: 'flex-end' }}>
           {sent && <span style={{ color: '#4ADE80', fontSize: '0.8rem' }}>Sent! Staff will review it.</span>}
-          <button className="dx-btn primary" disabled={!canWrite || sending}>
+          <button className="dx-btn primary" disabled={sending}>
             <Send size={13} /> {sending ? 'Sending…' : 'Submit clip'}
           </button>
         </div>
@@ -166,13 +165,13 @@ export function ClipsPanel({ staff, canWrite, canReview, search }: { staff: bool
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 'auto' }}>
                   {staff && (
                     <>
-                      <button className="dx-btn" disabled={!canReview || c.status === 'approved'} onClick={() => review(c.id, 'approved')}>
+                      <button className="dx-btn" disabled={c.status === 'approved'} onClick={() => review(c.id, 'approved')}>
                         <Check size={13} /> Approve
                       </button>
-                      <button className="dx-btn" disabled={!canReview || c.status === 'featured'} onClick={() => review(c.id, 'featured')}>
+                      <button className="dx-btn" disabled={c.status === 'featured'} onClick={() => review(c.id, 'featured')}>
                         <Star size={13} /> Feature
                       </button>
-                      <button className="dx-btn" disabled={!canReview || c.status === 'rejected'} onClick={() => review(c.id, 'rejected')}>
+                      <button className="dx-btn" disabled={c.status === 'rejected'} onClick={() => review(c.id, 'rejected')}>
                         <X size={13} /> Reject
                       </button>
                     </>
@@ -180,7 +179,7 @@ export function ClipsPanel({ staff, canWrite, canReview, search }: { staff: bool
                   <a className="dx-btn ghost" href={c.url} target="_blank" rel="noreferrer noopener" title="Open">
                     <ExternalLink size={13} />
                   </a>
-                  {(canReview || (canWrite && c.status === 'pending')) && (
+                  {(staff || c.status === 'pending') && (
                     <button className="dx-btn ghost" onClick={() => remove(c.id)} title="Delete">
                       <Trash2 size={13} />
                     </button>

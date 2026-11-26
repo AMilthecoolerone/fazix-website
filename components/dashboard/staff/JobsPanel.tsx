@@ -29,7 +29,7 @@ const APP_STATUSES: ApplicationStatus[] = ['new', 'reviewing', 'interview', 'acc
 
 const qid = () => `q_${Math.random().toString(36).slice(2, 9)}`;
 
-export function JobsPanel({ canEdit, search }: { canEdit: boolean; search: string }) {
+export function JobsPanel({ search }: { search: string }) {
   const [view, setView] = useState<'applications' | 'jobs'>('applications');
   const [jobs, setJobs] = useState<Job[]>([]);
   const [apps, setApps] = useState<JobApplication[]>([]);
@@ -75,14 +75,13 @@ export function JobsPanel({ canEdit, search }: { canEdit: boolean; search: strin
           </button>
         </div>
       </div>
-      {!canEdit && <div className="dx-note">You&apos;re viewing as a demo account, so editing is turned off.</div>}
       {error && <div className="dx-error">{error}</div>}
       {loading ? (
         <div className="dx-card dx-empty">Loading…</div>
       ) : view === 'jobs' ? (
-        <JobEditor jobs={jobs} setJobs={setJobs} apps={apps} canEdit={canEdit} search={search} setError={setError} />
+        <JobEditor jobs={jobs} setJobs={setJobs} apps={apps} search={search} setError={setError} />
       ) : (
-        <ApplicationReview apps={apps} setApps={setApps} jobs={jobs} canEdit={canEdit} search={search} setError={setError} />
+        <ApplicationReview apps={apps} setApps={setApps} jobs={jobs} search={search} setError={setError} />
       )}
     </div>
   );
@@ -92,14 +91,12 @@ function JobEditor({
   jobs,
   setJobs,
   apps,
-  canEdit,
   search,
   setError,
 }: {
   jobs: Job[];
   setJobs: React.Dispatch<React.SetStateAction<Job[]>>;
   apps: JobApplication[];
-  canEdit: boolean;
   search: string;
   setError: (e: string | null) => void;
 }) {
@@ -163,11 +160,9 @@ function JobEditor({
   return (
     <div className="dx-split">
       <div className="dx-card" style={{ padding: 10 }}>
-        {canEdit && (
-          <button className="dx-btn primary" style={{ width: '100%', justifyContent: 'center', marginBottom: 10 }} onClick={() => select('new')}>
-            <Plus size={14} /> New job
-          </button>
-        )}
+        <button className="dx-btn primary" style={{ width: '100%', justifyContent: 'center', marginBottom: 10 }} onClick={() => select('new')}>
+          <Plus size={14} /> New job
+        </button>
         <div className="dx-list">
           {visible.length === 0 && <div className="dx-empty">No jobs yet.</div>}
           {visible.map((j) => (
@@ -200,7 +195,7 @@ function JobEditor({
                   </a>
                 )}
                 {selectedId !== 'new' && (
-                  <button className="dx-btn ghost" disabled={!canEdit} onClick={remove} title="Delete">
+                  <button className="dx-btn ghost" onClick={remove} title="Delete">
                     <Trash2 size={13} />
                   </button>
                 )}
@@ -288,7 +283,7 @@ function JobEditor({
             </button>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button className="dx-btn primary" disabled={!canEdit || saving || !draft.title} onClick={save}>
+              <button className="dx-btn primary" disabled={saving || !draft.title} onClick={save}>
                 <Save size={14} /> {saving ? 'Saving…' : selectedId === 'new' ? 'Create job' : 'Save changes'}
               </button>
             </div>
@@ -303,14 +298,12 @@ function ApplicationReview({
   apps,
   setApps,
   jobs,
-  canEdit,
   search,
   setError,
 }: {
   apps: JobApplication[];
   setApps: React.Dispatch<React.SetStateAction<JobApplication[]>>;
   jobs: Job[];
-  canEdit: boolean;
   search: string;
   setError: (e: string | null) => void;
 }) {
@@ -413,7 +406,7 @@ function ApplicationReview({
                   </p>
                 </div>
               </div>
-              <button className="dx-btn ghost" disabled={!canEdit} onClick={() => remove(selected.id)} title="Delete">
+              <button className="dx-btn ghost" onClick={() => remove(selected.id)} title="Delete">
                 <Trash2 size={13} />
               </button>
             </div>
@@ -423,7 +416,7 @@ function ApplicationReview({
             </div>
             <div className="dx-tabs">
               {APP_STATUSES.map((s) => (
-                <button key={s} className={`dx-tab ${selected.status === s ? 'is-active' : ''}`} disabled={!canEdit} onClick={() => patch(selected.id, { status: s })}>
+                <button key={s} className={`dx-tab ${selected.status === s ? 'is-active' : ''}`} onClick={() => patch(selected.id, { status: s })}>
                   {s[0].toUpperCase() + s.slice(1)}
                 </button>
               ))}
@@ -447,7 +440,7 @@ function ApplicationReview({
               <textarea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} />
             </label>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button className="dx-btn" disabled={!canEdit || notes === selected.staffNotes} onClick={() => patch(selected.id, { staffNotes: notes })}>
+              <button className="dx-btn" disabled={notes === selected.staffNotes} onClick={() => patch(selected.id, { staffNotes: notes })}>
                 <Save size={13} /> Save notes
               </button>
             </div>

@@ -62,7 +62,7 @@ export default async function JobPage({ params }: Props) {
           <JobApplyForm
             jobId={job.id}
             questions={job.questions}
-            defaults={session && !session.isDemo ? { name: session.displayName, discord: session.username, email: session.email || '' } : undefined}
+            defaults={session ? { name: session.displayName, discord: session.username, email: session.email || '' } : undefined}
           />
         </div>
       </main>

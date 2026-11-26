@@ -1,121 +1,24 @@
+/**
+ * Auth model for the site. Login is Discord OAuth only; everything that reads the
+ * current user goes through getSession() in lib/session.ts, so swapping the provider
+ * (e.g. to Clerk later) only touches lib/session.ts and the /api/auth routes.
+ */
+
 export type UserGroup = 'support' | 'player' | 'partner' | 'user';
-export type UserRole = UserGroup | 'manager' | 'coach' | 'admin';
 
 export interface UserSession {
-  id: string;
+  id: string; // Discord user ID
   username: string;
   displayName: string;
-  avatar: string;
   avatarUrl: string;
-  role: UserGroup;
-  group?: UserGroup;
-  eligibleGroups?: UserGroup[];
+  role: UserGroup; // highest group from Discord roles
+  eligibleGroups: UserGroup[];
   discordRoles?: string[];
-  groupTitle?: string;
   email?: string;
-  teamName?: string;
-  isDemo?: boolean;
-  joinedAt?: string;
-  mmr?: number;
 }
 
 export const SESSION_COOKIE_NAME = 'fazix_auth_session';
-
-export const USER_GROUPS: Record<UserGroup, { id: UserGroup; label: string; badge: string; description: string }> = {
-  support: {
-    id: 'support',
-    label: 'Support Team',
-    badge: 'Staff & Management',
-    description: 'Ticket desk management, tryout review, partner coordination & team oversight'
-  },
-  player: {
-    id: 'player',
-    label: 'Esports team (player)',
-    badge: '2,185 SSL MMR',
-    description: 'Competitive scrims, Bo7 lobbies, tournament schedules & player stats'
-  },
-  partner: {
-    id: 'partner',
-    label: 'Partners',
-    badge: 'Official Partner',
-    description: 'Discord sponsored ads queue, tournament co-branding & partner support'
-  },
-  user: {
-    id: 'user',
-    label: 'Normal people (Users)',
-    badge: 'Community',
-    description: 'Roster tryout applications, community ticket desk & general inquiries'
-  }
-};
-
-export const DEMO_PROFILES: Record<UserGroup, UserSession> = {
-  support: {
-    id: 'demo-support-001',
-    username: 'fazix_support',
-    displayName: 'Fazix Support Staff',
-    avatar: 'wolf_admin',
-    avatarUrl: '/images/logo.png',
-    role: 'support',
-    group: 'support',
-    eligibleGroups: ['support', 'player', 'partner', 'user'],
-    groupTitle: 'Support Team',
-    email: 'support@fazix-esport.xyz',
-    teamName: 'FAZIX Support & Management',
-    isDemo: true,
-    joinedAt: '2023-08-10'
-  },
-  player: {
-    id: 'demo-player-002',
-    username: 'fazix_striker',
-    displayName: 'Fazix Striker (Pro)',
-    avatar: 'wolf_purple',
-    avatarUrl: '/images/logo.png',
-    role: 'player',
-    group: 'player',
-    eligibleGroups: ['player', 'user'],
-    groupTitle: 'Esports team (player)',
-    email: 'player@fazix-esport.xyz',
-    teamName: 'FAZIX Main RLCS Roster',
-    isDemo: true,
-    joinedAt: '2024-02-15',
-    mmr: 2185
-  },
-  partner: {
-    id: 'demo-partner-003',
-    username: 'beyond_modes',
-    displayName: 'Beyond Modes (Partner)',
-    avatar: 'wolf_gold',
-    avatarUrl: '/images/logo.png',
-    role: 'partner',
-    group: 'partner',
-    eligibleGroups: ['partner', 'user'],
-    groupTitle: 'Partners',
-    email: 'contact@beyondmodes.gg',
-    teamName: 'Beyond Modes x FAZIX',
-    isDemo: true,
-    joinedAt: '2024-06-01'
-  },
-  user: {
-    id: 'demo-user-004',
-    username: 'community_member',
-    displayName: 'Community Member',
-    avatar: 'wolf_community',
-    avatarUrl: '/images/logo.png',
-    role: 'user',
-    group: 'user',
-    eligibleGroups: ['user'],
-    groupTitle: 'Normal people (Users)',
-    email: 'member@discord.gg',
-    teamName: 'FAZIX Community',
-    isDemo: true,
-    joinedAt: '2026-01-10'
-  }
-};
-
-// Backwards compatibility aliases for older demo references
-(DEMO_PROFILES as any).manager = DEMO_PROFILES.support;
-(DEMO_PROFILES as any).admin = DEMO_PROFILES.support;
-(DEMO_PROFILES as any).coach = DEMO_PROFILES.player;
+export const OAUTH_STATE_COOKIE = 'fazix_oauth_state';
 
 export const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID || '1493692988654751887';
 
@@ -225,7 +128,7 @@ export function isDiscordOAuthConfigured(): boolean {
 /**
  * Generates Discord OAuth2 Authorization URL with dynamic baseUrl
  */
-export function getDiscordOAuthUrl(state?: string, baseUrlOverride?: string): string {
+export function getDiscordOAuthUrl(state: string, baseUrlOverride?: string): string {
   const clientId =
     process.env.DISCORD_CLIENT_ID ||
     process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID ||
@@ -235,39 +138,6 @@ export function getDiscordOAuthUrl(state?: string, baseUrlOverride?: string): st
   const scope = encodeURIComponent('identify email guilds guilds.members.read');
   const encodedRedirect = encodeURIComponent(redirectUri);
 
-  const stateParam = state ? `&state=${encodeURIComponent(state)}` : '';
+  const stateParam = `&state=${encodeURIComponent(state)}`;
   return `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodedRedirect}&scope=${scope}${stateParam}`;
-}
-
-/**
- * Safe cookie serialization for session
- */
-export function serializeSession(session: UserSession): string {
-  try {
-    const jsonStr = JSON.stringify(session);
-    if (typeof Buffer !== 'undefined') {
-      return Buffer.from(jsonStr).toString('base64url');
-    }
-    return btoa(unescape(encodeURIComponent(jsonStr)));
-  } catch {
-    return '';
-  }
-}
-
-/**
- * Safe cookie deserialization for session
- */
-export function deserializeSession(serialized: string): UserSession | null {
-  if (!serialized) return null;
-  try {
-    let jsonStr = '';
-    if (typeof Buffer !== 'undefined') {
-      jsonStr = Buffer.from(serialized, 'base64url').toString('utf8');
-    } else {
-      jsonStr = decodeURIComponent(escape(atob(serialized)));
-    }
-    return JSON.parse(jsonStr) as UserSession;
-  } catch {
-    return null;
-  }
 }

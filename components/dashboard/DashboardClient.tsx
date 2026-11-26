@@ -38,7 +38,6 @@ const CARD_COLORS = {
 export function DashboardClient({ initialSession }: { initialSession: UserSession }) {
   const router = useRouter();
   const isStaff = (initialSession.eligibleGroups || [initialSession.role]).includes('support');
-  const canWrite = !initialSession.isDemo;
 
   const navItems = NAV_ITEMS.filter((item) => !item.staff || isStaff);
   const [activeTab, setActiveTab] = useState<DashboardTab>(navItems[0].id);
@@ -89,7 +88,7 @@ export function DashboardClient({ initialSession }: { initialSession: UserSessio
             <img src={initialSession.avatarUrl || '/images/logo.png'} alt="" width={30} height={30} />
             <span className="db-user-text">
               <strong>{initialSession.displayName}</strong>
-              <small>{initialSession.isDemo ? 'Demo (read-only)' : isStaff ? 'Staff' : `@${initialSession.username}`}</small>
+              <small>{isStaff ? 'Staff' : `@${initialSession.username}`}</small>
             </span>
           </button>
         </div>
@@ -107,9 +106,9 @@ export function DashboardClient({ initialSession }: { initialSession: UserSessio
         </header>
 
         <div className="db-body">
-          {activeTab === 'clips' && <ClipsPanel staff={isStaff} canWrite={canWrite} canReview={isStaff && canWrite} search={search} />}
-          {isStaff && activeTab === 'cms' && <CmsPanel canEdit={canWrite} search={search} />}
-          {isStaff && activeTab === 'jobs' && <JobsPanel canEdit={canWrite} search={search} />}
+          {activeTab === 'clips' && <ClipsPanel staff={isStaff} search={search} />}
+          {isStaff && activeTab === 'cms' && <CmsPanel search={search} />}
+          {isStaff && activeTab === 'jobs' && <JobsPanel search={search} />}
           {isStaff && activeTab === 'analytics' && <AnalyticsPanel colors={CARD_COLORS} />}
         </div>
       </main>

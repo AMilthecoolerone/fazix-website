@@ -4,7 +4,7 @@ import { updateApplication, deleteApplication } from '@/lib/jobs';
 export const dynamic = 'force-dynamic';
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await requireStaff({ write: true });
+  const session = await requireStaff();
   if (session instanceof Response) return session;
   const { id } = await params;
   const body = await req.json().catch(() => ({}));
@@ -13,7 +13,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 }
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await requireStaff({ write: true });
+  const session = await requireStaff();
   if (session instanceof Response) return session;
   const { id } = await params;
   return (await deleteApplication(id)) ? Response.json({ ok: true }) : jsonError(404, 'Application not found.');

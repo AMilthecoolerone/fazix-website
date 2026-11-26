@@ -46,13 +46,9 @@ export async function getSession(): Promise<UserSession | null> {
   return decodeSession(store.get(SESSION_COOKIE_NAME)?.value);
 }
 
-/** Staff = has a staff Discord role. Demo sessions can look but never change anything. */
+/** Staff = has a staff Discord role (see DISCORD_ROLE_IDS.support in lib/auth.ts). */
 export function isStaff(session: UserSession | null): boolean {
   return Boolean(session && (session.eligibleGroups || [session.role]).includes('support'));
-}
-
-export function canWrite(session: UserSession | null): boolean {
-  return isStaff(session) && !session!.isDemo;
 }
 
 export function jsonError(status: number, error: string): Response {
@@ -60,18 +56,16 @@ export function jsonError(status: number, error: string): Response {
 }
 
 /** Returns the session, or a Response to return immediately. */
-export async function requireStaff(opts: { write?: boolean } = {}): Promise<UserSession | Response> {
+export async function requireStaff(): Promise<UserSession | Response> {
   const session = await getSession();
   if (!session) return jsonError(401, 'Not signed in.');
   if (!isStaff(session)) return jsonError(403, 'Staff only.');
-  if (opts.write && session.isDemo) return jsonError(403, 'Demo accounts are read-only.');
   return session;
 }
 
-export async function requireUser(opts: { write?: boolean } = {}): Promise<UserSession | Response> {
+export async function requireUser(): Promise<UserSession | Response> {
   const session = await getSession();
   if (!session) return jsonError(401, 'Not signed in.');
-  if (opts.write && session.isDemo) return jsonError(403, 'Demo accounts are read-only.');
   return session;
 }
 

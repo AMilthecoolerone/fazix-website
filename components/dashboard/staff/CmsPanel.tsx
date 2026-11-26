@@ -38,7 +38,7 @@ function snapshotText(a: { title: string; summary: string; content: string[]; ba
   return [`# ${a.title}`, `[${a.badge || ''}] (${a.status || 'published'})`, '', a.summary, '', ...a.content].join('\n');
 }
 
-export function CmsPanel({ canEdit, search }: { canEdit: boolean; search: string }) {
+export function CmsPanel({ search }: { search: string }) {
   const [articles, setArticles] = useState<ArticleWithMeta[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -170,15 +170,11 @@ export function CmsPanel({ canEdit, search }: { canEdit: boolean; search: string
           <button className="dx-btn" onClick={() => { setSelectedId(null); setView('ticker'); }}>
             <Megaphone size={14} /> Top banner
           </button>
-          {canEdit && (
-            <button className="dx-btn primary" onClick={() => select('new')}>
-              <Plus size={14} /> New article
-            </button>
-          )}
+          <button className="dx-btn primary" onClick={() => select('new')}>
+            <Plus size={14} /> New article
+          </button>
         </div>
       </div>
-
-      {!canEdit && <div className="dx-note">You&apos;re viewing as a demo account, so editing is turned off.</div>}
       {error && <div className="dx-error">{error}</div>}
 
       <div className="dx-split">
@@ -248,11 +244,11 @@ export function CmsPanel({ canEdit, search }: { canEdit: boolean; search: string
                 <input value={ticker.link || ''} onChange={(e) => setTicker({ ...ticker, link: e.target.value })} placeholder="#news or https://…" />
               </label>
               <div style={{ display: 'flex', gap: 8 }}>
-                <button className="dx-btn primary" disabled={!canEdit || !ticker.text} onClick={() => saveTicker(true)}>
+                <button className="dx-btn primary" disabled={!ticker.text} onClick={() => saveTicker(true)}>
                   <Megaphone size={14} /> {ticker.isActive ? 'Update banner' : 'Go live'}
                 </button>
                 {ticker.isActive && (
-                  <button className="dx-btn danger" disabled={!canEdit} onClick={() => saveTicker(false)}>
+                  <button className="dx-btn danger" onClick={() => saveTicker(false)}>
                     Turn off
                   </button>
                 )}
@@ -280,7 +276,7 @@ export function CmsPanel({ canEdit, search }: { canEdit: boolean; search: string
                           {compareId === v.id ? 'Hide changes' : 'Changes'}
                         </button>
                         {i > 0 && (
-                          <button className="dx-btn" disabled={!canEdit} onClick={() => restore(v)}>
+                          <button className="dx-btn" onClick={() => restore(v)}>
                             <RotateCcw size={13} /> Restore
                           </button>
                         )}
@@ -315,7 +311,7 @@ export function CmsPanel({ canEdit, search }: { canEdit: boolean; search: string
                       <button className="dx-btn ghost" onClick={openHistory}>
                         <History size={13} /> History
                       </button>
-                      <button className="dx-btn ghost" disabled={!canEdit} onClick={remove} title="Delete">
+                      <button className="dx-btn ghost" onClick={remove} title="Delete">
                         <Trash2 size={13} />
                       </button>
                     </>
@@ -359,7 +355,7 @@ export function CmsPanel({ canEdit, search }: { canEdit: boolean; search: string
               </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <input className="dx-input" style={{ flex: 1 }} placeholder="What changed? (optional, shows in history)" value={draft.note} onChange={(e) => setDraft({ ...draft, note: e.target.value })} maxLength={200} />
-                <button className="dx-btn primary" disabled={!canEdit || saving || !draft.title || !dirty} onClick={save}>
+                <button className="dx-btn primary" disabled={saving || !draft.title || !dirty} onClick={save}>
                   <Save size={14} /> {saving ? 'Saving…' : selectedId === 'new' ? 'Create' : 'Save version'}
                 </button>
               </div>

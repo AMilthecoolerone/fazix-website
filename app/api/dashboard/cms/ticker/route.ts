@@ -10,7 +10,7 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
-  const session = await requireStaff({ write: true });
+  const session = await requireStaff();
   if (session instanceof Response) return session;
   const body = await req.json().catch(() => ({}));
   const text = clampText(body.text, 200);
@@ -28,7 +28,7 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE() {
-  const session = await requireStaff({ write: true });
+  const session = await requireStaff();
   if (session instanceof Response) return session;
   await clearTicker();
   return Response.json({ ok: true });
