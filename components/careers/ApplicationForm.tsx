@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Pencil } from 'lucide-react';
 import { DiscordIcon } from '@/components/icons/DiscordIcon';
+import { prepareDing, playDing } from '@/lib/ding';
 import {
   allQuestions,
   formatAnswer,
@@ -223,6 +224,7 @@ export function ApplicationForm({ slug, jobTitle, sections, applicant, requireDi
 
   async function submit() {
     if (preview) return;
+    prepareDing(); // unlock audio while we still have the click
     setState('sending');
     setSubmitError(null);
     try {
@@ -234,6 +236,7 @@ export function ApplicationForm({ slug, jobTitle, sections, applicant, requireDi
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Your application could not be sent. Try again in a minute.');
       setState('done');
+      playDing(0.75); // lands as the tick draws in
       try {
         localStorage.removeItem(storageKey);
       } catch {
