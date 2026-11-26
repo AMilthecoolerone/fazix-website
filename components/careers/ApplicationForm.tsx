@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Check, ArrowLeft, Pencil } from 'lucide-react';
+import { ArrowLeft, Pencil } from 'lucide-react';
 import { DiscordIcon } from '@/components/icons/DiscordIcon';
 import {
   allQuestions,
@@ -148,6 +148,14 @@ export function ApplicationForm({ slug, jobTitle, sections, applicant, requireDi
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [website, setWebsite] = useState('');
   const topRef = useRef<HTMLDivElement>(null);
+  const doneRef = useRef<HTMLDivElement>(null);
+
+  // Bring the success message into view and move focus to it for screen readers.
+  useEffect(() => {
+    if (state !== 'done') return;
+    doneRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    doneRef.current?.focus({ preventScroll: true });
+  }, [state]);
 
   // Restore a draft from this browser.
   useEffect(() => {
@@ -239,10 +247,12 @@ export function ApplicationForm({ slug, jobTitle, sections, applicant, requireDi
 
   if (state === 'done') {
     return (
-      <div className="af-done" role="status">
-        <span className="af-done-icon">
-          <Check size={22} />
-        </span>
+      <div className="af-done is-sent" role="status" ref={doneRef} tabIndex={-1}>
+        <svg className="af-check" viewBox="0 0 96 96" aria-hidden="true">
+          <circle className="af-check-ring" cx="48" cy="48" r="44" />
+          <circle className="af-check-circle" cx="48" cy="48" r="44" pathLength={1} />
+          <path className="af-check-tick" d="M30 49.5 L42.5 62 L67 36" pathLength={1} />
+        </svg>
         <h2>Application sent</h2>
         <p>
           Thanks for applying for {jobTitle}. The team reads every application and will contact you on Discord

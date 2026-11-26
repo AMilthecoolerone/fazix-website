@@ -1138,3 +1138,23 @@ h1, h2, h3, h4 {
 .fb-preset-list button:hover { border-color: rgba(255,89,0,0.6); color: #fff; }
 .fb-preset-list button small { color: #6E6E7C; font-size: 0.68rem; }
 .fb-preset-list button.is-added { opacity: 0.5; }
+
+/* Success checkmark: circle draws, tick draws, small pop, one soft ring pulse. */
+.af-done.is-sent { align-items: center; text-align: center; padding: 56px 28px 48px; outline: none; }
+.af-done.is-sent p { max-width: 46ch; }
+.af-check { width: 96px; height: 96px; margin-bottom: 14px; overflow: visible; animation: af-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.95s both; }
+.af-check-circle { fill: none; stroke: var(--color-orange); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transform: rotate(-90deg); transform-origin: center; animation: af-draw 0.6s cubic-bezier(0.65, 0, 0.35, 1) 0.1s forwards, af-fill 0.35s ease 0.7s forwards; }
+.af-check-tick { fill: none; stroke: #fff; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: af-draw 0.4s cubic-bezier(0.65, 0, 0.35, 1) 0.75s forwards; }
+.af-check-ring { fill: none; stroke: var(--color-orange); stroke-width: 2; opacity: 0; transform-origin: center; animation: af-ring 0.9s ease-out 1s; }
+.af-done.is-sent h2 { animation: af-rise 0.5s ease 1.05s both; }
+.af-done.is-sent p, .af-done.is-sent a { animation: af-rise 0.5s ease 1.15s both; }
+@keyframes af-draw { to { stroke-dashoffset: 0; } }
+@keyframes af-fill { to { fill: var(--color-orange); } }
+@keyframes af-pop { 0% { transform: scale(1); } 45% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes af-ring { 0% { opacity: 0.6; transform: scale(1); } 100% { opacity: 0; transform: scale(1.6); } }
+@keyframes af-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .af-check, .af-check-ring, .af-done.is-sent h2, .af-done.is-sent p, .af-done.is-sent a { animation: none; }
+  .af-check-circle, .af-check-tick { animation: none; stroke-dashoffset: 0; }
+  .af-check-circle { fill: var(--color-orange); }
+}
