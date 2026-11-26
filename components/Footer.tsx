@@ -137,6 +137,16 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <a
+                  href="/discord"
+                  style={{ color: '#8E8E98', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#8E8E98')}
+                >
+                  {t.nav.communityDropdown.analyticsTitle}
+                </a>
+              </li>
+              <li>
+                <a
                   href="/creators"
                   style={{ color: '#8E8E98', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.2s' }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')}

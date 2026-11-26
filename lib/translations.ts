@@ -40,6 +40,8 @@ export interface SiteTranslations {
     communityDropdown: {
       discordTitle: string;
       discordSubtitle: string;
+      analyticsTitle: string;
+      analyticsSubtitle: string;
       twitchTitle: string;
       twitchSubtitle: string;
       youtubeTitle: string;
@@ -308,6 +310,8 @@ export const TRANSLATIONS: Record<LanguageCode, SiteTranslations> = {
       communityDropdown: {
         discordTitle: 'Official Discord',
         discordSubtitle: 'Community Discord with active RL members',
+        analyticsTitle: 'Discord Analytics',
+        analyticsSubtitle: 'Live online count, member growth & recent joins',
         twitchTitle: 'Twitch Channel',
         twitchSubtitle: 'Live tournament runs & pro streams',
         youtubeTitle: 'YouTube Channel',
@@ -574,6 +578,8 @@ export const TRANSLATIONS: Record<LanguageCode, SiteTranslations> = {
       communityDropdown: {
         discordTitle: 'Offizieller Discord',
         discordSubtitle: 'Aktive Community mit regelmäßigen Events',
+        analyticsTitle: 'Discord Analytics',
+        analyticsSubtitle: 'Live-Online-Zahlen, Wachstum & neue Mitglieder',
         twitchTitle: 'Twitch-Kanal',
         twitchSubtitle: 'Live-Turniere & Pro-Streams',
         youtubeTitle: 'YouTube-Kanal',
@@ -840,6 +846,8 @@ export const TRANSLATIONS: Record<LanguageCode, SiteTranslations> = {
       communityDropdown: {
         discordTitle: 'Discord officiel',
         discordSubtitle: 'Communauté active et tournois ouverts',
+        analyticsTitle: 'Statistiques Discord',
+        analyticsSubtitle: 'Membres en ligne, croissance & arrivées récentes',
         twitchTitle: 'Chaîne Twitch',
         twitchSubtitle: 'Tournois en direct & streams pros',
         youtubeTitle: 'Chaîne YouTube',
@@ -1106,6 +1114,8 @@ export const TRANSLATIONS: Record<LanguageCode, SiteTranslations> = {
       communityDropdown: {
         discordTitle: 'Discord oficial',
         discordSubtitle: 'Comunidad activa con eventos periódicos',
+        analyticsTitle: 'Analíticas de Discord',
+        analyticsSubtitle: 'Usuarios en línea, crecimiento y últimos ingresos',
         twitchTitle: 'Canal de Twitch',
         twitchSubtitle: 'Torneos en directo y retransmisiones',
         youtubeTitle: 'Canal de YouTube',
