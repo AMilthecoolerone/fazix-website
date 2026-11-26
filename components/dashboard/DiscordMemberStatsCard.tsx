@@ -30,6 +30,9 @@ interface RecentMemberItem {
 
 interface DiscordMembersData {
   success: boolean;
+  source?: string;
+  statusNote?: string;
+  guildId?: string;
   totalMembers: number;
   onlineMembers: number;
   guildName: string;
@@ -37,6 +40,7 @@ interface DiscordMembersData {
   growthTimeline: MemberJoinStat[];
   recentMembers: RecentMemberItem[];
   monthlyGrowthRate: string;
+  avgMonthlyJoins?: number;
   updatedAt: string;
 }
 
@@ -54,93 +58,22 @@ interface DiscordMemberStatsCardProps {
   };
 }
 
-const DEFAULT_DATA: DiscordMembersData = {
-  success: true,
-  totalMembers: 177,
-  onlineMembers: 53,
-  guildName: 'Fazix eSports',
+const EMPTY_DATA: DiscordMembersData = {
+  success: false,
+  totalMembers: 0,
+  onlineMembers: 0,
+  guildName: 'Discord Server',
   guildIconUrl: '/images/logo.png',
-  monthlyGrowthRate: '+34.2%',
-  updatedAt: '2026-10-17T12:00:00Z',
-  growthTimeline: [
-    { monthKey: '2026-04', label: 'Apr 26', newJoins: 20, cumulative: 20 },
-    { monthKey: '2026-05', label: 'May 26', newJoins: 18, cumulative: 38 },
-    { monthKey: '2026-06', label: 'Jun 26', newJoins: 22, cumulative: 60 },
-    { monthKey: '2026-07', label: 'Jul 26', newJoins: 8, cumulative: 68 },
-    { monthKey: '2026-08', label: 'Aug 26', newJoins: 35, cumulative: 103 },
-    { monthKey: '2026-09', label: 'Sep 26', newJoins: 58, cumulative: 161 },
-    { monthKey: '2026-10', label: 'Oct 26', newJoins: 16, cumulative: 177 },
-  ],
-  recentMembers: [
-    {
-      id: '606919283347554304',
-      username: 'slushiirll',
-      displayName: 'slushii',
-      avatarUrl: 'https://cdn.discordapp.com/avatars/606919283347554304/7b4879e02f0b4f282b4c6f467a2a8ddb.png?size=64',
-      joinedAt: '2026-10-16T19:07:29.966000+00:00',
-      roles: ['1493695399402410114'],
-    },
-    {
-      id: '782298715892547614',
-      username: 'derpraven',
-      displayName: 'Praven',
-      avatarUrl: 'https://cdn.discordapp.com/embed/avatars/0.png',
-      joinedAt: '2026-10-16T10:11:29.340000+00:00',
-      roles: [],
-    },
-    {
-      id: '821731671237197854',
-      username: 'awjupp',
-      displayName: 'AWJupp',
-      avatarUrl: 'https://cdn.discordapp.com/embed/avatars/1.png',
-      joinedAt: '2026-10-15T20:42:06.977000+00:00',
-      roles: [],
-    },
-    {
-      id: '921124581295837264',
-      username: 'moxxll',
-      displayName: 'moxxll',
-      avatarUrl: 'https://cdn.discordapp.com/embed/avatars/2.png',
-      joinedAt: '2026-10-15T16:42:46.468000+00:00',
-      roles: [],
-    },
-    {
-      id: '512948192837194721',
-      username: 'finn1643',
-      displayName: 'Finn',
-      avatarUrl: 'https://cdn.discordapp.com/embed/avatars/3.png',
-      joinedAt: '2026-10-15T13:05:07.757000+00:00',
-      roles: [],
-    },
-    {
-      id: '439201948271038475',
-      username: 'voiddim',
-      displayName: 'voidleft',
-      avatarUrl: 'https://cdn.discordapp.com/embed/avatars/4.png',
-      joinedAt: '2026-10-14T15:59:18.650000+00:00',
-      roles: [],
-    },
-    {
-      id: '321948192837194721',
-      username: 'skayizi',
-      displayName: 'Skyz',
-      avatarUrl: 'https://cdn.discordapp.com/embed/avatars/5.png',
-      joinedAt: '2026-10-14T14:29:44.800000+00:00',
-      roles: [],
-    },
-    {
-      id: '191189638902185984',
-      username: 'holzmaennchen',
-      displayName: 'Holzmännchen♫',
-      avatarUrl: 'https://cdn.discordapp.com/avatars/191189638902185984/a_797d32082d887d670cd13dd49a4fcfbe.png?size=64',
-      joinedAt: '2026-06-10T12:02:04.108000+00:00',
-      roles: ['1493693333598375989'],
-    },
-  ],
+  monthlyGrowthRate: '0.0%',
+  avgMonthlyJoins: 0,
+  updatedAt: '',
+  growthTimeline: [],
+  recentMembers: [],
 };
 
 export function DiscordMemberStatsCard({ colors }: DiscordMemberStatsCardProps) {
-  const [data, setData] = useState<DiscordMembersData>(DEFAULT_DATA);
+  const [data, setData] = useState<DiscordMembersData>(EMPTY_DATA);
+  const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'cumulative' | 'monthly' | 'members'>('cumulative');
   const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
@@ -150,14 +83,15 @@ export function DiscordMemberStatsCard({ colors }: DiscordMemberStatsCardProps) 
   const fetchStats = async (isManualRefresh = false) => {
     if (isManualRefresh) setRefreshing(true);
     try {
-      const res = await fetch('/api/discord/members');
-      if (res.ok) {
-        const json: DiscordMembersData = await res.json();
+      const res = await fetch(isManualRefresh ? '/api/discord/members?refresh=1' : '/api/discord/members');
+      const json: DiscordMembersData = await res.json();
+      if (json && typeof json.totalMembers === 'number') {
         setData(json);
       }
     } catch (err) {
       console.error('Failed to fetch Discord member stats:', err);
     } finally {
+      setLoading(false);
       if (isManualRefresh) {
         setTimeout(() => setRefreshing(false), 450);
       }
@@ -173,10 +107,9 @@ export function DiscordMemberStatsCard({ colors }: DiscordMemberStatsCardProps) 
     try {
       const date = new Date(isoString);
       if (!isMounted) {
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
       }
-      const now = new Date('2026-10-17T12:00:00Z');
-      const diffMs = now.getTime() - date.getTime();
+      const diffMs = Math.max(0, Date.now() - date.getTime());
       const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
       const diffDays = Math.floor(diffHours / 24);
 
@@ -196,9 +129,15 @@ export function DiscordMemberStatsCard({ colors }: DiscordMemberStatsCardProps) 
 
   const timeline = data.growthTimeline;
   const totalMembers = data.totalMembers;
-  const onlineMembers = data?.onlineMembers ?? 53;
-  const growthRate = data?.monthlyGrowthRate ?? '+34.2%';
+  const onlineMembers = data.onlineMembers;
+  const growthRate = data.monthlyGrowthRate;
   const recentMembers = data.recentMembers;
+  const avgMonthly =
+    typeof data.avgMonthlyJoins === 'number'
+      ? data.avgMonthlyJoins
+      : timeline.length > 0
+      ? Number((timeline.reduce((s, t) => s + t.newJoins, 0) / timeline.length).toFixed(1))
+      : 0;
 
   // Filtered members for "Who Joined When" view
   const filteredMembers = useMemo(() => {
@@ -315,11 +254,11 @@ export function DiscordMemberStatsCard({ colors }: DiscordMemberStatsCardProps) 
                   border: '1px solid rgba(88, 101, 242, 0.3)',
                 }}
               >
-                Fazix eSports
+                {data.guildName || 'Discord Server'}
               </span>
             </div>
             <span style={{ fontSize: '0.7rem', color: colors.textMuted, display: 'block', marginTop: '1px' }}>
-              Live server roster & join analytics
+              {loading ? 'Connecting to Discord...' : data.success ? 'Live server roster & join analytics' : `Unavailable (${data.statusNote || 'check bot config'})`}
             </span>
           </div>
         </div>
@@ -426,16 +365,16 @@ export function DiscordMemberStatsCard({ colors }: DiscordMemberStatsCardProps) 
 
         <div>
           <span style={{ fontSize: '0.68rem', color: colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600, display: 'block' }}>
-            New in October
+            Latest Month
           </span>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '2px' }}>
             <span style={{ fontSize: '1.65rem', fontWeight: 900, color: '#38BDF8', letterSpacing: '-0.02em', lineHeight: 1 }}>
-              +{timeline[timeline.length - 1]?.newJoins ?? 16}
+              +{timeline[timeline.length - 1]?.newJoins ?? 0}
             </span>
             <span style={{ fontSize: '0.68rem', color: colors.textSecondary }}>joins</span>
           </div>
           <span style={{ fontSize: '0.68rem', color: colors.textSecondary, marginTop: '3px', display: 'block' }}>
-            Current month pace
+            {timeline[timeline.length - 1]?.label || 'Current pace'}
           </span>
         </div>
 
@@ -445,12 +384,12 @@ export function DiscordMemberStatsCard({ colors }: DiscordMemberStatsCardProps) 
           </span>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '2px' }}>
             <span style={{ fontSize: '1.65rem', fontWeight: 900, color: '#A78BFA', letterSpacing: '-0.02em', lineHeight: 1 }}>
-              ~29.5
+              ~{avgMonthly}
             </span>
             <span style={{ fontSize: '0.68rem', color: colors.textSecondary }}>/mo</span>
           </div>
           <span style={{ fontSize: '0.68rem', color: colors.textSecondary, marginTop: '3px', display: 'block' }}>
-            Consistent expansion
+            Monthly average
           </span>
         </div>
       </div>
@@ -690,7 +629,7 @@ export function DiscordMemberStatsCard({ colors }: DiscordMemberStatsCardProps) 
               }}
             >
               <div style={{ color: '#A0A0B0', fontWeight: 600, fontSize: '0.65rem' }}>
-                {activePoint.item.label} (2026)
+                {activePoint.item.label}
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', marginTop: '2px' }}>
                 <span style={{ color: colors.textSecondary }}>New Joins:</span>
@@ -933,11 +872,13 @@ export function DiscordMemberStatsCard({ colors }: DiscordMemberStatsCardProps) 
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', color: colors.textMuted }}>
           <span>Discord Gateway:</span>
-          <strong style={{ color: '#10B981' }}>Connected (v10 Bot)</strong>
+          <strong style={{ color: data.success ? '#10B981' : '#F59E0B' }}>
+            {loading ? 'Connecting...' : data.success ? 'Connected (v10 Bot)' : 'Unavailable'}
+          </strong>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', color: colors.textMuted }}>
           <span>Guild ID:</span>
-          <strong style={{ color: '#FFFFFF' }}>1493692988654751887</strong>
+          <strong style={{ color: '#FFFFFF' }}>{data.guildId || '—'}</strong>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', color: colors.textMuted }}>
           <span>Active Presences:</span>
@@ -945,7 +886,9 @@ export function DiscordMemberStatsCard({ colors }: DiscordMemberStatsCardProps) 
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', color: colors.textMuted }}>
           <span>Verified Roster:</span>
-          <strong style={{ color: '#10B981' }}>Synchronized</strong>
+          <strong style={{ color: data.success ? '#10B981' : colors.textMuted }}>
+            {data.success ? 'Synchronized' : 'Waiting'}
+          </strong>
         </div>
       </div>
     </div>

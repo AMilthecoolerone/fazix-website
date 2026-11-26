@@ -21,7 +21,8 @@ import {
   Flame,
   ArrowRight,
   Globe,
-  Check
+  Check,
+  BarChart2
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -139,6 +140,12 @@ const getDropdownData = (lang: LanguageCode): Record<string, DropdownItem[]> => 
         subtitle: t.nav.communityDropdown.discordSubtitle,
         icon: <Users size={18} color="#FF701E" />,
         href: 'https://discord.gg/UdnGPHmvcT'
+      },
+      {
+        title: t.nav.communityDropdown.analyticsTitle,
+        subtitle: t.nav.communityDropdown.analyticsSubtitle,
+        icon: <BarChart2 size={18} color="#10B981" />,
+        href: '/discord'
       },
       {
         title: t.nav.communityDropdown.twitchTitle,
@@ -281,6 +288,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection, initi
       }
       if (targetHref.startsWith('/creators')) {
         window.location.href = '/creators';
+        return;
+      }
+      if (targetHref.startsWith('/discord')) {
+        window.location.href = '/discord';
         return;
       }
       if (targetHref.startsWith('/#')) {

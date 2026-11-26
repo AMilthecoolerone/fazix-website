@@ -18,6 +18,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/discord`,
+      lastModified: now,
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/apply`,
       lastModified: now,
       changeFrequency: 'weekly',
