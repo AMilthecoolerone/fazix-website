@@ -170,7 +170,7 @@ const getDropdownData = (lang: LanguageCode): Record<string, DropdownItem[]> => 
         title: t.nav.companyDropdown.careersTitle,
         subtitle: t.nav.companyDropdown.careersSubtitle,
         icon: <FileText size={18} color="#FFFFFF" />,
-        href: '/jobs'
+        href: '/careers'
       },
       {
         title: t.nav.companyDropdown.pressTitle,
@@ -275,8 +275,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection, initi
         window.location.href = '/apply';
         return;
       }
-      if (targetHref.startsWith('/jobs')) {
-        window.location.href = '/jobs';
+      if (targetHref.startsWith('/careers')) {
+        window.location.href = '/careers';
         return;
       }
       if (targetHref.startsWith('/creators')) {

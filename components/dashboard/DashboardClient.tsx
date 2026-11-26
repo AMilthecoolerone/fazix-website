@@ -7,7 +7,7 @@ import type { UserSession } from '@/lib/auth';
 import { BarChart3, Briefcase, Clapperboard, FileText, LayoutDashboard, LogOut, Search } from 'lucide-react';
 import { OverviewPanel } from './staff/OverviewPanel';
 import { CmsPanel } from './staff/CmsPanel';
-import { JobsPanel } from './staff/JobsPanel';
+import { JobsPanel } from './staff/jobs/JobsPanel';
 import { ClipsPanel } from './staff/ClipsPanel';
 import { AnalyticsPanel } from './staff/AnalyticsPanel';
 

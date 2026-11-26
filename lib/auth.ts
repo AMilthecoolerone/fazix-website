@@ -19,6 +19,13 @@ export interface UserSession {
 
 export const SESSION_COOKIE_NAME = 'fazix_auth_session';
 export const OAUTH_STATE_COOKIE = 'fazix_oauth_state';
+export const OAUTH_NEXT_COOKIE = 'fazix_oauth_next';
+
+/** Only same-site paths like "/careers/x/apply" are allowed as a post-login destination. */
+export function safeNextPath(next: string | null | undefined): string | null {
+  if (!next || !next.startsWith('/') || next.startsWith('//') || next.includes('\\')) return null;
+  return next.slice(0, 300);
+}
 
 export const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID || '1493692988654751887';
 

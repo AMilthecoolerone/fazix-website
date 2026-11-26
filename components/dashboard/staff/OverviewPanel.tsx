@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Plus, PlayCircle } from 'lucide-react';
 import { summarize, FORMAT_LABEL, type Match } from '@/lib/matchUtils';
-import type { JobApplication } from '@/lib/jobs';
+import type { Application as JobApplication } from '@/lib/careerForm';
 import type { Clip } from '@/lib/clips';
 import type { ArticleWithMeta } from '@/lib/cms';
 import { MatchEditor } from './MatchEditor';

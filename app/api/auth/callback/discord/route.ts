@@ -5,6 +5,8 @@ import {
   getBaseUrl,
   SESSION_COOKIE_NAME,
   OAUTH_STATE_COOKIE,
+  OAUTH_NEXT_COOKIE,
+  safeNextPath,
   UserSession,
   resolveUserGroups,
   DISCORD_GUILD_ID
@@ -18,7 +20,9 @@ export async function GET(request: Request) {
   const error = searchParams.get('error');
   const state = searchParams.get('state');
 
-  const expectedState = (await cookies()).get(OAUTH_STATE_COOKIE)?.value;
+  const cookieStore = await cookies();
+  const expectedState = cookieStore.get(OAUTH_STATE_COOKIE)?.value;
+  const nextPath = safeNextPath(cookieStore.get(OAUTH_NEXT_COOKIE)?.value) || '/dashboard';
   if (!error && (!state || !expectedState || state !== expectedState)) {
     return NextResponse.redirect(new URL('/login?error=state_mismatch', request.url));
   }
@@ -150,7 +154,7 @@ export async function GET(request: Request) {
     };
 
     const serialized = encodeSession(session);
-    const response = NextResponse.redirect(new URL('/dashboard', request.url));
+    const response = NextResponse.redirect(new URL(nextPath, request.url));
 
     response.cookies.set({
       name: SESSION_COOKIE_NAME,
@@ -163,6 +167,7 @@ export async function GET(request: Request) {
     });
 
     response.cookies.set({ name: OAUTH_STATE_COOKIE, value: '', path: '/api/auth/callback', maxAge: 0 });
+    response.cookies.set({ name: OAUTH_NEXT_COOKIE, value: '', path: '/api/auth/callback', maxAge: 0 });
     return response;
   } catch (err: any) {
     console.error('Discord Auth Callback Exception:', err);

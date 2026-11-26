@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { NextResponse } from 'next/server';
-import { getDiscordOAuthUrl, getBaseUrl, isDiscordOAuthConfigured, OAUTH_STATE_COOKIE } from '@/lib/auth';
+import { getDiscordOAuthUrl, getBaseUrl, isDiscordOAuthConfigured, OAUTH_STATE_COOKIE, OAUTH_NEXT_COOKIE, safeNextPath } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,5 +21,9 @@ export async function GET(request: Request) {
     path: '/api/auth/callback',
     maxAge: 60 * 10,
   });
+  const next = safeNextPath(new URL(request.url).searchParams.get('next'));
+  if (next) {
+    response.cookies.set({ name: OAUTH_NEXT_COOKIE, value: next, httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/api/auth/callback', maxAge: 60 * 10 });
+  }
   return response;
 }

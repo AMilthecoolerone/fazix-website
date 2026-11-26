@@ -1,151 +1,210 @@
 import { readDoc, updateDoc, newId } from '@/lib/store';
 import { clampText } from '@/lib/session';
+import {
+  APPLICATION_STATUSES,
+  HAS_OPTIONS,
+  QUESTION_TYPES,
+  STATUS_LABEL,
+  allQuestions,
+  isVisible,
+  slugify,
+  validateAnswer,
+  type Answers,
+  type Application,
+  type ApplicationStatus,
+  type FormSection,
+  type Job,
+  type JobStatus,
+  type Question,
+  type QuestionType,
+} from '@/lib/careerForm';
 
-export type QuestionType = 'short' | 'long' | 'number' | 'url' | 'select' | 'checkbox';
-
-export interface JobQuestion {
-  id: string;
-  label: string;
-  type: QuestionType;
-  required: boolean;
-  options?: string[]; // select only
-  placeholder?: string;
-}
-
-export type JobStatus = 'open' | 'closed' | 'draft';
-
-export interface Job {
-  id: string;
-  title: string;
-  department: string; // e.g. Esports, Content, Staff
-  type: string; // e.g. Volunteer, Part-time
-  location: string;
-  summary: string;
-  description: string;
-  requirements: string[];
-  questions: JobQuestion[];
-  status: JobStatus;
-  createdAt: string;
-  updatedAt: string;
-  createdBy: string;
-}
-
-export type ApplicationStatus = 'new' | 'reviewing' | 'interview' | 'accepted' | 'rejected';
-
-export interface JobApplication {
-  id: string;
-  jobId: string;
-  jobTitle: string;
-  applicant: { name: string; discord: string; email?: string; discordId?: string; avatarUrl?: string };
-  answers: { questionId: string; label: string; value: string }[];
-  status: ApplicationStatus;
-  staffNotes: string;
-  reviewedBy?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export type { Job, Application } from '@/lib/careerForm';
 
 const JOBS_KEY = 'jobs';
 const APPS_KEY = 'job-applications';
+const TYPES = QUESTION_TYPES.map((t) => t.type);
 
-export const QUESTION_TYPES: QuestionType[] = ['short', 'long', 'number', 'url', 'select', 'checkbox'];
-export const APPLICATION_STATUSES: ApplicationStatus[] = ['new', 'reviewing', 'interview', 'accepted', 'rejected'];
+const list = (v: unknown, max: number, len: number): string[] =>
+  (Array.isArray(v) ? v : []).map((x) => clampText(x, len)).filter(Boolean).slice(0, max);
+const num = (v: unknown): number | undefined => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? undefined : Number(v));
 
-export async function listJobs(opts: { publicOnly?: boolean } = {}): Promise<Job[]> {
-  const jobs = await readDoc<Job[]>(JOBS_KEY, []);
-  return opts.publicOnly ? jobs.filter((j) => j.status === 'open') : jobs;
+/** Converts jobs saved by the first version (flat `questions`, `type`, `description`). */
+function migrate(raw: Record<string, unknown>): Job {
+  if (Array.isArray(raw.sections)) return raw as unknown as Job;
+  const oldTypes: Record<string, QuestionType> = { short: 'short_text', long: 'long_text', number: 'number', url: 'url', select: 'dropdown', checkbox: 'consent' };
+  const questions = (Array.isArray(raw.questions) ? raw.questions : []).map((q: Record<string, unknown>) => ({
+    ...(q as object),
+    type: oldTypes[q.type as string] || 'short_text',
+  })) as Question[];
+  return {
+    ...(raw as object),
+    slug: slugify(String(raw.title || 'job')) + '-' + String(raw.id).slice(-4),
+    employmentType: String(raw.type || 'Volunteer'),
+    commitment: '',
+    about: String(raw.description || ''),
+    responsibilities: [],
+    requirements: (raw.requirements as string[]) || [],
+    niceToHave: [],
+    perks: [],
+    closesAt: null,
+    requireDiscord: false,
+    sections: [{ id: 'sec_main', title: 'Application', questions }],
+  } as unknown as Job;
+}
+
+export async function listJobs(): Promise<Job[]> {
+  const jobs = await readDoc<Record<string, unknown>[]>(JOBS_KEY, []);
+  return jobs.map(migrate);
 }
 
 export async function getJob(id: string): Promise<Job | null> {
   return (await listJobs()).find((j) => j.id === id) ?? null;
 }
 
-/** Validates and normalises untrusted job input from the dashboard. */
-export function sanitizeJob(raw: Record<string, unknown>): Omit<Job, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'> {
-  const questions = Array.isArray(raw.questions) ? raw.questions.slice(0, 30) : [];
+export async function getJobBySlug(slug: string): Promise<Job | null> {
+  return (await listJobs()).find((j) => j.slug === slug) ?? null;
+}
+
+function sanitizeQuestion(raw: Record<string, unknown>): Question | null {
+  const type = TYPES.includes(raw?.type as QuestionType) ? (raw.type as QuestionType) : 'short_text';
+  const label = clampText(raw?.label, 300);
+  if (!label) return null;
+  const q: Question = {
+    id: clampText(raw.id, 40) || newId('q'),
+    type,
+    label,
+    help: clampText(raw.help, 300) || undefined,
+    placeholder: clampText(raw.placeholder, 120) || undefined,
+    required: Boolean(raw.required),
+    showIf: null,
+  };
+  if (HAS_OPTIONS.includes(type)) q.options = Array.from(new Set(list(raw.options, 30, 100)));
+  if (type === 'number' || type === 'scale') {
+    q.min = num(raw.min);
+    q.max = num(raw.max);
+  }
+  if (type === 'scale') {
+    q.min = Math.max(0, Math.min(1, q.min ?? 1));
+    q.max = Math.max(3, Math.min(10, q.max ?? 5));
+  }
+  if (type === 'short_text' || type === 'long_text') q.maxLength = num(raw.maxLength) ? Math.min(type === 'short_text' ? 200 : 4000, Math.max(10, num(raw.maxLength)!)) : undefined;
+  const cond = raw.showIf as { questionId?: unknown; equals?: unknown } | null;
+  if (cond && cond.questionId && cond.equals) q.showIf = { questionId: clampText(cond.questionId, 40), equals: clampText(cond.equals, 100) };
+  return q;
+}
+
+/** Validates and normalises job input from the dashboard. */
+export function sanitizeJob(raw: Record<string, unknown>) {
+  const sections: FormSection[] = (Array.isArray(raw.sections) ? raw.sections : []).slice(0, 12).map((s: Record<string, unknown>) => ({
+    id: clampText(s?.id, 40) || newId('sec'),
+    title: clampText(s?.title, 120) || 'Questions',
+    description: clampText(s?.description, 500) || undefined,
+    questions: (Array.isArray(s?.questions) ? s.questions : [])
+      .slice(0, 40)
+      .map(sanitizeQuestion)
+      .filter((q): q is Question => q !== null),
+  }));
+  // Drop conditions that point at a missing question or one that comes later.
+  const order = sections.flatMap((s) => s.questions.map((q) => q.id));
+  for (const s of sections)
+    for (const q of s.questions)
+      if (q.showIf && !(order.indexOf(q.showIf.questionId) > -1 && order.indexOf(q.showIf.questionId) < order.indexOf(q.id))) q.showIf = null;
+
+  const closes = clampText(raw.closesAt, 40);
   return {
     title: clampText(raw.title, 120),
+    slug: slugify(clampText(raw.slug, 80) || clampText(raw.title, 120)),
     department: clampText(raw.department, 60) || 'General',
-    type: clampText(raw.type, 60) || 'Volunteer',
+    employmentType: clampText(raw.employmentType, 60) || 'Volunteer',
     location: clampText(raw.location, 60) || 'Remote',
+    commitment: clampText(raw.commitment, 80),
     summary: clampText(raw.summary, 300),
-    description: clampText(raw.description, 8000),
-    requirements: (Array.isArray(raw.requirements) ? raw.requirements : [])
-      .map((r) => clampText(r, 200))
-      .filter(Boolean)
-      .slice(0, 20),
+    about: clampText(raw.about, 8000),
+    responsibilities: list(raw.responsibilities, 20, 300),
+    requirements: list(raw.requirements, 20, 300),
+    niceToHave: list(raw.niceToHave, 20, 300),
+    perks: list(raw.perks, 20, 300),
     status: (['open', 'closed', 'draft'] as const).includes(raw.status as JobStatus) ? (raw.status as JobStatus) : 'draft',
-    questions: questions
-      .map((q: Record<string, unknown>) => {
-        const type = QUESTION_TYPES.includes(q?.type as QuestionType) ? (q.type as QuestionType) : 'short';
-        const options =
-          type === 'select'
-            ? (Array.isArray(q.options) ? q.options : []).map((o) => clampText(o, 80)).filter(Boolean).slice(0, 20)
-            : undefined;
-        return {
-          id: clampText(q?.id, 40) || newId('q'),
-          label: clampText(q?.label, 200),
-          type,
-          required: Boolean(q?.required),
-          options,
-          placeholder: clampText(q?.placeholder, 120) || undefined,
-        };
-      })
-      .filter((q) => q.label),
+    closesAt: closes && !Number.isNaN(Date.parse(closes)) ? new Date(closes).toISOString() : null,
+    requireDiscord: Boolean(raw.requireDiscord),
+    sections,
   };
+}
+
+function uniqueSlug(slug: string, jobs: Job[], selfId?: string): string {
+  let s = slug;
+  let n = 2;
+  while (jobs.some((j) => j.slug === s && j.id !== selfId)) s = `${slug}-${n++}`;
+  return s;
 }
 
 export async function createJob(input: ReturnType<typeof sanitizeJob>, by: string): Promise<Job> {
   const now = new Date().toISOString();
-  const job: Job = { ...input, id: newId('job'), createdAt: now, updatedAt: now, createdBy: by };
-  await updateDoc<Job[], void>(JOBS_KEY, [], (jobs) => {
-    jobs.unshift(job);
+  return updateDoc<Record<string, unknown>[], Job>(JOBS_KEY, [], (raw) => {
+    const jobs = raw.map(migrate);
+    const job: Job = { ...input, slug: uniqueSlug(input.slug, jobs), id: newId('job'), createdAt: now, updatedAt: now, createdBy: by };
+    raw.unshift(job as unknown as Record<string, unknown>);
+    return job;
   });
-  return job;
 }
 
-export async function updateJob(id: string, input: Partial<ReturnType<typeof sanitizeJob>>): Promise<Job | null> {
-  return updateDoc<Job[], Job | null>(JOBS_KEY, [], (jobs) => {
-    const job = jobs.find((j) => j.id === id);
-    if (!job) return null;
-    Object.assign(job, input, { updatedAt: new Date().toISOString() });
+export async function updateJob(id: string, input: ReturnType<typeof sanitizeJob>): Promise<Job | null> {
+  return updateDoc<Record<string, unknown>[], Job | null>(JOBS_KEY, [], (raw) => {
+    const jobs = raw.map(migrate);
+    const i = jobs.findIndex((j) => j.id === id);
+    if (i === -1) return null;
+    const job: Job = { ...jobs[i], ...input, slug: uniqueSlug(input.slug, jobs, id), updatedAt: new Date().toISOString() };
+    raw[i] = job as unknown as Record<string, unknown>;
     return job;
   });
 }
 
 export async function deleteJob(id: string): Promise<boolean> {
-  return updateDoc<Job[], boolean>(JOBS_KEY, [], (jobs) => {
-    const i = jobs.findIndex((j) => j.id === id);
+  return updateDoc<Record<string, unknown>[], boolean>(JOBS_KEY, [], (raw) => {
+    const i = raw.findIndex((j) => j.id === id);
     if (i === -1) return false;
-    jobs.splice(i, 1);
+    raw.splice(i, 1);
     return true;
   });
 }
 
-/** Checks answers against the job's questions. Returns an error message or the cleaned answers. */
-export function validateAnswers(job: Job, raw: unknown): { error: string } | { answers: JobApplication['answers'] } {
+/** Checks a submission against the job's form. Hidden questions are dropped. */
+export function checkSubmission(job: Job, raw: unknown): { error: string } | { answers: Application['answers'] } {
   const given = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
-  const answers: JobApplication['answers'] = [];
-  for (const q of job.questions) {
-    const value = q.type === 'checkbox' ? (given[q.id] === true || given[q.id] === 'true' ? 'Yes' : 'No') : clampText(given[q.id], q.type === 'long' ? 4000 : 500);
-    if (q.required && (q.type === 'checkbox' ? value !== 'Yes' : !value)) return { error: `"${q.label}" is required.` };
-    if (value && q.type === 'number' && Number.isNaN(Number(value))) return { error: `"${q.label}" must be a number.` };
-    if (value && q.type === 'url' && !/^https?:\/\/\S+$/i.test(value)) return { error: `"${q.label}" must be a link starting with https://` };
-    if (value && q.type === 'select' && !(q.options || []).includes(value)) return { error: `Pick a valid option for "${q.label}".` };
-    answers.push({ questionId: q.id, label: q.label, value });
+  const answers: Answers = {};
+  for (const q of allQuestions(job)) {
+    const v = given[q.id];
+    if (q.type === 'multi_choice') answers[q.id] = Array.isArray(v) ? v.map((x) => clampText(x, 100)).filter(Boolean).slice(0, 30) : [];
+    else if (typeof v === 'string' || typeof v === 'number') answers[q.id] = clampText(String(v), 4000);
   }
-  return { answers };
+  const all = allQuestions(job);
+  const out: Application['answers'] = [];
+  for (const s of job.sections) {
+    for (const q of s.questions) {
+      if (!isVisible(q, answers, all)) continue;
+      const err = validateAnswer(q, answers[q.id]);
+      if (err) return { error: `${q.label}: ${err}` };
+      out.push({ questionId: q.id, section: s.title, label: q.label, type: q.type, value: answers[q.id] ?? '' });
+    }
+  }
+  return { answers: out };
 }
 
-export async function listApplications(jobId?: string): Promise<JobApplication[]> {
-  const apps = await readDoc<JobApplication[]>(APPS_KEY, []);
-  return jobId ? apps.filter((a) => a.jobId === jobId) : apps;
+export async function listApplications(jobId?: string): Promise<Application[]> {
+  const apps = await readDoc<Application[]>(APPS_KEY, []);
+  const norm = apps.map((a) => ({ rating: null, history: [], ...a }));
+  return jobId ? norm.filter((a) => a.jobId === jobId) : norm;
 }
 
-export async function addApplication(app: Omit<JobApplication, 'id' | 'status' | 'staffNotes' | 'createdAt' | 'updatedAt'>): Promise<JobApplication> {
+export async function hasApplied(jobId: string, discordId: string): Promise<boolean> {
+  return (await listApplications(jobId)).some((a) => a.applicant.discordId === discordId);
+}
+
+export async function addApplication(app: Pick<Application, 'jobId' | 'jobTitle' | 'applicant' | 'answers'>): Promise<Application> {
   const now = new Date().toISOString();
-  const full: JobApplication = { ...app, id: newId('app'), status: 'new', staffNotes: '', createdAt: now, updatedAt: now };
-  await updateDoc<JobApplication[], void>(APPS_KEY, [], (apps) => {
+  const full: Application = { ...app, id: newId('app'), status: 'new', rating: null, staffNotes: '', history: [{ at: now, by: app.applicant.name, action: 'Applied' }], createdAt: now, updatedAt: now };
+  await updateDoc<Application[], void>(APPS_KEY, [], (apps) => {
     apps.unshift(full);
   });
   return full;
@@ -153,22 +212,36 @@ export async function addApplication(app: Omit<JobApplication, 'id' | 'status' |
 
 export async function updateApplication(
   id: string,
-  patch: { status?: ApplicationStatus; staffNotes?: string },
+  patch: { status?: unknown; staffNotes?: unknown; rating?: unknown },
   by: string
-): Promise<JobApplication | null> {
-  return updateDoc<JobApplication[], JobApplication | null>(APPS_KEY, [], (apps) => {
+): Promise<Application | null> {
+  return updateDoc<Application[], Application | null>(APPS_KEY, [], (apps) => {
     const app = apps.find((a) => a.id === id);
     if (!app) return null;
-    if (patch.status && APPLICATION_STATUSES.includes(patch.status)) app.status = patch.status;
-    if (typeof patch.staffNotes === 'string') app.staffNotes = patch.staffNotes.slice(0, 4000);
-    app.reviewedBy = by;
-    app.updatedAt = new Date().toISOString();
+    app.history ||= [];
+    const now = new Date().toISOString();
+    if (APPLICATION_STATUSES.includes(patch.status as ApplicationStatus) && patch.status !== app.status) {
+      app.status = patch.status as ApplicationStatus;
+      app.history.push({ at: now, by, action: `Moved to ${STATUS_LABEL[app.status]}` });
+    }
+    if (typeof patch.staffNotes === 'string' && patch.staffNotes !== app.staffNotes) {
+      app.staffNotes = patch.staffNotes.slice(0, 4000);
+      app.history.push({ at: now, by, action: 'Updated notes' });
+    }
+    if (patch.rating === null || (Number.isInteger(patch.rating) && (patch.rating as number) >= 1 && (patch.rating as number) <= 5)) {
+      if (patch.rating !== app.rating) {
+        app.rating = patch.rating as number | null;
+        app.history.push({ at: now, by, action: app.rating ? `Rated ${app.rating}/5` : 'Cleared rating' });
+      }
+    }
+    app.history = app.history.slice(-50);
+    app.updatedAt = now;
     return app;
   });
 }
 
 export async function deleteApplication(id: string): Promise<boolean> {
-  return updateDoc<JobApplication[], boolean>(APPS_KEY, [], (apps) => {
+  return updateDoc<Application[], boolean>(APPS_KEY, [], (apps) => {
     const i = apps.findIndex((a) => a.id === id);
     if (i === -1) return false;
     apps.splice(i, 1);

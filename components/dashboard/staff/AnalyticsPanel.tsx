@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { DiscordMemberStatsCard } from '../DiscordMemberStatsCard';
-import type { JobApplication, Job } from '@/lib/jobs';
+import type { Application as JobApplication, Job } from '@/lib/careerForm';
 import type { Clip } from '@/lib/clips';
 import { api } from './api';
 
@@ -14,7 +14,7 @@ export function AnalyticsPanel({ colors }: { colors: Colors }) {
 
   useEffect(() => {
     Promise.all([
-      api<{ jobs: Job[] }>('/api/jobs?all=1'),
+      api<{ jobs: Job[] }>('/api/dashboard/jobs'),
       api<{ applications: JobApplication[] }>('/api/dashboard/applications'),
       api<{ clips: Clip[] }>('/api/clips'),
     ])
