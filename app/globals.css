@@ -1153,8 +1153,10 @@ h1, h2, h3, h4 {
 @keyframes af-pop { 0% { transform: scale(1); } 45% { transform: scale(1.12); } 100% { transform: scale(1); } }
 @keyframes af-ring { 0% { opacity: 0.6; transform: scale(1); } 100% { opacity: 0; transform: scale(1.6); } }
 @keyframes af-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+/* Reduced motion: keep the in-place circle and tick drawing (no movement across the screen),
+   but drop the bounce, the expanding ring and the sliding text. */
 @media (prefers-reduced-motion: reduce) {
-  .af-check, .af-check-ring, .af-done.is-sent h2, .af-done.is-sent p, .af-done.is-sent a { animation: none; }
-  .af-check-circle, .af-check-tick { animation: none; stroke-dashoffset: 0; }
-  .af-check-circle { fill: var(--color-orange); }
+  .af-check, .af-check-ring { animation: none; }
+  .af-done.is-sent h2, .af-done.is-sent p, .af-done.is-sent a { animation: af-fade 0.4s ease 1s both; }
 }
+@keyframes af-fade { from { opacity: 0; } to { opacity: 1; } }
