@@ -44,3 +44,5 @@ data/jobs.json
 data/job-applications.json
 data/clips.json
 data/cms-versions.json
+data/matches.json
+data/staff-notes.json

@@ -4,15 +4,17 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { UserSession } from '@/lib/auth';
-import { BarChart3, Briefcase, Clapperboard, FileText, LogOut, Search } from 'lucide-react';
+import { BarChart3, Briefcase, Clapperboard, FileText, LayoutDashboard, LogOut, Search } from 'lucide-react';
+import { OverviewPanel } from './staff/OverviewPanel';
 import { CmsPanel } from './staff/CmsPanel';
 import { JobsPanel } from './staff/JobsPanel';
 import { ClipsPanel } from './staff/ClipsPanel';
 import { AnalyticsPanel } from './staff/AnalyticsPanel';
 
-type DashboardTab = 'analytics' | 'cms' | 'jobs' | 'clips';
+type DashboardTab = 'overview' | 'analytics' | 'cms' | 'jobs' | 'clips';
 
 const NAV_ITEMS: { id: DashboardTab; label: string; icon: React.ComponentType<{ size?: number }>; staff?: boolean }[] = [
+  { id: 'overview', label: 'Overview', icon: LayoutDashboard, staff: true },
   { id: 'analytics', label: 'Analytics', icon: BarChart3, staff: true },
   { id: 'cms', label: 'Content', icon: FileText, staff: true },
   { id: 'jobs', label: 'Jobs', icon: Briefcase, staff: true },
@@ -97,7 +99,7 @@ export function DashboardClient({ initialSession }: { initialSession: UserSessio
       <main className="db-main">
         <header className="db-head">
           <h1>{active.label}</h1>
-          {active.id !== 'analytics' && (
+          {active.id !== 'analytics' && active.id !== 'overview' && (
             <label className="db-search">
               <Search size={14} />
               <input type="search" placeholder="Search…" value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -106,6 +108,7 @@ export function DashboardClient({ initialSession }: { initialSession: UserSessio
         </header>
 
         <div className="db-body">
+          {isStaff && activeTab === 'overview' && <OverviewPanel onNavigate={(tab) => { setActiveTab(tab); setSearch(''); }} />}
           {activeTab === 'clips' && <ClipsPanel staff={isStaff} search={search} />}
           {isStaff && activeTab === 'cms' && <CmsPanel search={search} />}
           {isStaff && activeTab === 'jobs' && <JobsPanel search={search} />}
